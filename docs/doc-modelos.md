@@ -112,7 +112,6 @@ erDiagram
     FUNCIONARIO ||--o| TECNICO : "classificado TECNICO"
     FUNCIONARIO ||--o| ADMINISTRATIVO : "classificado ADMINISTRATIVO"
     CLIENTE ||--o{ ORDEM_SERVICO : "solicita"
-    FUNCIONARIO ||--o{ ORDEM_SERVICO : "executa"
     TECNICO ||--o{ ORDEM_SERVICO : "responsavel"
     TECNICO ||--o{ VISITA_TECNICA : "realiza"
     ORDEM_SERVICO ||--o{ VISITA_TECNICA : "gera"
@@ -202,7 +201,7 @@ Conta a Receber	| Gerada automaticamente ao encerrar uma OS, registra o valor a 
 | cpf |	Cadastro de Pessoa Física |	VARCHAR | 14 | Unique / Not Null |
 | contato | Telefone para contato | VARCHAR | 20 | --- |
 | salario |	Salário base do funcionário | DECIMAL(10,2) | --- |	Not Null |
-| tipo | Classificação do cliente (PF ou PJ) | VARCHAR | 2 | PF, PJ / Not Null |
+| tipo | Classificação do funcionário (técnico ou administrativo) | VARCHAR | 2 | PF, PJ / Not Null |
 | data_admissao	| Data de contratação |	DATE | --- | Not Null |
 | horario_expediente | Horário de trabalho | VARCHAR | 50 |	--- |
 | status |	Situação do funcionário	| VARCHAR |	10	| CHECK (status IN ('ATIVO','FERIAS','AFASTADO','DESATIVADO'))
@@ -222,14 +221,13 @@ Conta a Receber	| Gerada automaticamente ao encerrar uma OS, registra o valor a 
 
 |   Tabela   | ADMINISTRATIVO |
 | ---------- | ----------- |
-| Descrição  | Responsável pela execução de Ordens de Serviço e Visitas Técnicas. Armazena dados específicos como especialidade, certificações, nível de experiência e comissão percentual. |
-| Observação | Especialização da tabela FUNCIONARIO. Todo técnico deve ter um registro correspondente na tabela FUNCIONARIO com tipo = 'ADMINISTRATIVO'. |
+| Descrição  | Responsável pela gestão, emissão de contas, cadastro de clientes etc. |
+| Observação | Especialização da tabela FUNCIONARIO. Todo administrato deve ter um registro correspondente na tabela FUNCIONARIO com tipo = 'ADMINISTRATIVO'. |
 
 |  Nome         | Descrição                        | Tipo de Dado | Tamanho | Restrições de Domínio |
 | ------------- | -------------------------------- | ------------ | ------- | --------------------- |
 | id | Identificador único(FK para FUNCIONARIO) | INT | --- | PK / FK |
 | cargo | Cargo administrativo | VARCHAR | 80 | Not Null |
-| certificacoes  | Certificações técnicas (formato JSON ou texto) | TEXT| --- | --- |
 | setor | Nível hierárquico (1-5) | INT | --- | CHECK (nivel_experiencia BETWEEN 1 AND 5) |
 |bonus_fixo | Bônus mensal fixo | DECIMAL(10,2) | --- |	DEFAULT 0.00 |
 
