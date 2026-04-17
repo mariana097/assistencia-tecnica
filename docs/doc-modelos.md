@@ -66,6 +66,7 @@ erDiagram
         string descricao_problema
         string status
         float valor_total
+        int garantia_dias
         int cliente_id FK
         int tecnico_id FK
     }
@@ -92,6 +93,7 @@ erDiagram
         int id PK
         float valor
         date data_emissao
+        date data_vencimento
         date data_pagamento
         string status_pagamento
         int os_id FK
@@ -230,3 +232,74 @@ Conta a Receber	| Gerada automaticamente ao encerrar uma OS, registra o valor a 
 | certificacoes  | Certificações técnicas (formato JSON ou texto) | TEXT| --- | --- |
 | setor | Nível hierárquico (1-5) | INT | --- | CHECK (nivel_experiencia BETWEEN 1 AND 5) |
 |bonus_fixo | Bônus mensal fixo | DECIMAL(10,2) | --- |	DEFAULT 0.00 |
+
+|   Tabela   | ORDEM_SERVICO |
+| ---------- | ----------- |
+| Descrição  | Núcleo do sistema. Registra cada solicitação de serviço, seu status, valor total, datas de abertura e encerramento, além de vincular cliente solicitante e técnico responsável. |
+| Observação | Uma OS é aberta para cada atendimento solicitado. Ao ser finalizada, gera automaticamente uma CONTA_RECEBER. |
+
+|  Nome         | Descrição                        | Tipo de Dado | Tamanho | Restrições de Domínio |
+| ------------- | -------------------------------- | ------------ | ------- | --------------------- |
+| id | Identificador único da OS | SERIAL | --- | PK / Identity |
+| data_abertura | Data de criação da Ordem de Serviço  | DATE | --- | NOT NULL / DEFAULT CURRENT_DATE |
+| data_encerramento  | Data de conclusão do serviço | DATE | --- | --- |
+| descricao_problema | Descrição detalhada do problema relatado pelo cliente | TEXT | --- |	NOT NULL |
+| status | Situação atual da Ordem de Serviço |	VARCHAR | 20 | CHECK (status IN ('ABERTA', 'EM_ANDAMENTO', 'AGUARDANDO_PECA', 'FINALIZADA', 'CANCELADA')) / DEFAULT 'ABERTA' |
+| valor_total |	Valor total do serviço (mão de obra + equipamentos) | DECIMAL(10,2) | --- |	DEFAULT 0.00 |
+| garantia_dias | Dias de garantia do serviço prestado | INT | --- |  DEFAULT 90 |
+| cliente_id | Referência ao cliente solicitante | INT | --- | FK para CLIENTE(id) / NOT NULL |
+| tecnico_id | Referência ao técnico responsável | INT | --- | FK para TECNICO(id) |
+
+|   Tabela   | EQUIPAMENTO |
+| ---------- | ----------- |
+| Descrição  | Representa os itens que serão utilizados nos serviços prestados. |
+| Observação | Um equipamento pode ser utilizado em múltiplas Ordens de Serviço, e uma OS pode utilizar múltiplos equipamentos (relacionamento N:N). |
+
+|  Nome         | Descrição                        | Tipo de Dado | Tamanho | Restrições de Domínio |
+| ------------- | -------------------------------- | ------------ | ------- | --------------------- |
+| id | Identificador único da equipamento | SERIAL | --- | PK / Identity |
+| codigo | Código de identificação do equipamento  | VARCHAR | 15 | UNIQUE / NOT NULL |
+| tipo  | Tipo/categoria do equipamento | VARCHAR | 20 | NOT NULL |
+| marca | Marca do equipamento | VARCHAR | 20 |	--- |
+| modelo | Modelo do equipamento | VARCHAR | 20 | --- |
+| quantidade | Quantidade disponível em estoque | INT | --- | DEFAULT 1 / CHECK (quantidade >= 0) |
+
+|   Tabela   | ORDEM_SERVICO_EQUIPAMENTO |
+| ---------- | ----------- |
+| Descrição  | Tabela de relacionamento muitos-para-muitos entre Ordem de Serviço e Equipamento. |
+| Observação | Permite registrar quais equipamentos foram utilizados em cada OS, com quantidade. |
+
+|  Nome         | Descrição                        | Tipo de Dado | Tamanho | Restrições de Domínio |
+| ------------- | -------------------------------- | ------------ | ------- | --------------------- |
+| os_id | Referência à Ordem de Serviço | INT | --- | FK para ORDEM_SERVICO(id) / PK Composite |
+| equipamento_id | Referência ao Equipamento  | INT | --- | FK para EQUIPAMENTO(id) / PK Composite |
+| quantidade | Quantidade do equipamento utilizada na OS | INT | --- | DEFAULT 1 / CHECK (quantidade > 0) |
+
+|   Tabela   | VISITA_TECNICA |
+| ---------- | ----------- |
+| Descrição  | Vinculada a uma OS, registra agendamentos e realizações de atendimentos presenciais. |
+| Observação | A visita só pode ser atribuída a um técnico válido (especialização de FUNCIONARIO). |
+
+|  Nome         | Descrição                        | Tipo de Dado | Tamanho | Restrições de Domínio |
+| ------------- | -------------------------------- | ------------ | ------- | --------------------- |
+| id | Identificador único da visita | SERIAL | --- | PK / Identity |
+| data_agendamento | Data agendada para a visita técnica  | DATE | --- | NOT NULL |
+| data_realizacao  | Data em que a visita foi efetivamente realizada | DATE | --- | --- |
+| resultado | Descrição do resultado da visita técnica | TEXT | --- | --- |
+| os_id | Referência à Ordem de Serviço | INT | --- | FK para ORDEM_SERVICO(id) / NOT NULL |
+| tecnico_id | Referência ao técnico responsável | INT | --- | FK para TECNICO(id)/ NOT NULL |
+
+|   Tabela   | CONTA_RECEBER |
+| ---------- | ----------- |
+| Descrição  | Gerada automaticamente ao encerrar uma OS, registra o valor a ser pago pelo cliente e controla o status do pagamento. |
+| Observação | O status muda de PENDENTE para PAGO quando o pagamento é registrado. |
+
+|  Nome         | Descrição                        | Tipo de Dado | Tamanho | Restrições de Domínio |
+| ------------- | -------------------------------- | ------------ | ------- | --------------------- |
+| id | Identificador único do pagamento | SERIAL | --- | PK / Identity |
+| valor | Valor a ser recebido do cliente  | DECIMAL(10,2) | --- | NOT NULL / CHECK (valor > 0) |
+| data_emissao  | Data de emissão da conta | DATE | --- | NOT NULL / DEFAULT CURRENT_DATE |
+| data_vencimento  | Data de vencimento da conta | DATE | --- | NOT NULL |
+| data_pagamento  | Data em que a conta foi paga | DATE | --- | --- |
+| status_pagamento | Situação atual do pagamento | VARCHAR | 10 | CHECK (status_pagamento IN ('PENDENTE', 'PAGO', 'VENCIDO', 'CANCELADO')) / DEFAULT 'PENDENTE' |
+| os_id | Referência à Ordem de Serviço | INT | --- | FK para ORDEM_SERVICO(id) / NOT NULL |
