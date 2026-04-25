@@ -152,8 +152,7 @@ erDiagram
         string nome
         string endereco
         string contato
-        string tipo  # 'PF' ou 'PJ'
-        # CPF e CNPJ vão nas tabelas especializadas
+        string tipo  
     }
     
     CLIENTE_PF {
