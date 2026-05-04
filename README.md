@@ -13,7 +13,7 @@ O Sistema de Assistência Técnica tem como objetivo facilitar o gerenciamento d
 * Criação e controle de ordens de serviço  
 * Registro de visitas técnicas  
 * Gerenciamento de funcionários  
-* Controle financeiro através de contas (pendente, pago, cancelado)  
+* Controle financeiro através de contas (pendente, pago, cancelado)
 
 ---
 
