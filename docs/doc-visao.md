@@ -8,10 +8,13 @@ Descrição: O Sistema de Gestão de Assistência Técnica é uma aplicação we
 
 ---
 
+
 ## Equipe e Definição de Papéis
 
 Membro     |     Papel   |   E-mail   |
 ---------  | ----------- | ---------- |
+Jadson    | --  | -- |
+Mariana     | Analista, Desenvolvedor | araujodemedeirosmariana@gmail.com |
 Jadson    | Líder Técnico, Desenvolvedor, Testador | jadsonhipolito@gmail.com |
 Mariana     | Analista, Desenvolvedor | araujodemedeirosmariana@gmail.com |
 
@@ -21,6 +24,8 @@ Mariana     | Analista, Desenvolvedor | araujodemedeirosmariana@gmail.com |
 
 Membro     |     Competências   |
 ---------  | ----------- |
+Jadson    | --  |
+Mariana     | -- | 
 Jadson    | Python, FastAPI, SQLite, Git/GitHub, Modelagem de Dados, Arquitetura de Software |
 Mariana     | -- | 
 
@@ -33,6 +38,8 @@ O sistema poderá ser utilizado por diversos usuários. Temos os seguintes perfi
 Perfil                                 | Descrição   |
 ---------                              | ----------- |
 Cliente | Este usuário pode verificar suas ordens de serviço, consultar contas a receber e realizar pagamentos online de serviços concluídos.
+Administrativo | Este usuário é responsável pela gestão do sistema, cadastro de informações, controle financeiro e registro de pagamentos recebidos fora do sistema.
+Técnico | Este usuário é responsável pela execução dos serviços, atualização das ordens de serviço e registro de peças utilizadas.
 Administrador | Este usuário é responsável pela gestão do sistema, cadastro de informações, controle financeiro e registro de pagamentos recebidos fora do sistema.
 Técnico | Este usuário é responsável pela execução dos serviços, atualização das ordens de serviço e registro de peças utilizadas.
 
@@ -47,6 +54,10 @@ Regra: Um cliente deve ser obrigatoriamente CPF ou CNPJ, não podendo ser ambos.
 
 Requisito                     | Descrição   | Ator |
 ---------                     | ----------- | ---------- |
+RF01.1 - Cadastrar Cliente    | Insere novo novo cliente informando: id, nome, endereço, contato, CPF. | Administrativo |
+RF01.2 - Alterar Cliente      | Atualiza qualquer dado contido no cadastro do cliente, caso seja necessário. | Administrativo |
+RF01.3 - Consultar Cliente   | Consulta do cliente através dos dados do mesmo. | Administrativo, Técnico |
+RF01.4 - Desativar Cliente   | Desativar um cliente informando o id. | Administrativo |
 RF01.1 - Cadastrar Cliente    | Insere novo cliente informando: id, nome, endereço, contato, CPF. | Administrador |
 RF01.2 - Alterar Cliente      | Atualiza qualquer dado contido no cadastro do cliente, caso seja necessário. | Administrador |
 RF01.3 - Consultar Cliente   | Consulta do cliente através dos dados do mesmo. | Administrador, Técnico |
@@ -59,6 +70,10 @@ Um funcionário representa o usuário responsável pelas operações do sistema,
 
 Requisito                     | Descrição   | Ator           |
 ---------                     | ----------- | ----------     |
+RF02.1 - Cadastrar Funcionário | Insere novo funcionário informando: código, nome, CPF, cargo, salario, carteira, expendiente. | Administrativo |
+RF02.2 - Alterar Funcionário | Atualiza um funcionário informando: código, nome, CPF, cargo, salario, carteira, expendiente. | Administrativo |
+RF02.3 - Consultar Funcionário |  Consulta do funcionário através dos dados do mesmo. | Administrativo |
+RF02.4 - Desativar Funcionário | Desativar um funcionário informando o id. | Administrativo |
 RF02.1 - Cadastrar Funcionário | Insere novo funcionário informando: código, nome, CPF, cargo, salario, carteira, expediente. | Administrador |
 RF02.2 - Alterar Funcionário | Atualiza um funcionário informando: código, nome, CPF, cargo, salario, carteira, expediente. | Administrador |
 RF02.3 - Consultar Funcionário |  Consulta do funcionário através dos dados do mesmo. | Administrador |
@@ -73,6 +88,7 @@ Requisito                     | Descrição   | Ator           |
 ---------                     | ----------- | ----------     |
 RF03.1 - Abrir ordem de Serviço  | Criar de order de serviço para solicitação de reparo ou manutenção, incluir informações sobre o cliente, descrição do problema e quaisquer detalhes relevantes. | Administrador |
 RF03.2 - Editar ordem de serviço | Atualiza uma OS informando:informações sobre o cliente, descrição do problema e quaisquer detalhes relevantes. | Administrador |
+RF03.3 - Consultar ordem de serviço | Consulta uma OS informando: id. | Técnico, Administrador, cliente |
 RF03.3 - Consultar ordem de serviço | Consulta uma OS informando: id. | Técnico, Administrador, Cliente |
 RF03.4 - Atualizar Status da OS         | Alterar o status da OS conforme andamento. | Técnico, Administrador |
 RF03.5 - Encerrar ordem de serviço         | Encerramento da OS após a conclusão das atividades.  | Técnico |
@@ -93,6 +109,7 @@ RF04.4 - Desativar Equipamento   | Desativa um equipamento informando seu identi
 ---
 
 ### Entidade Visita Técnica - RF05 - Agendar Visitas Técnicas
+
 Uma visita técnica representa um atendimento presencial vinculado a uma ordem de serviço.
 
 Requisito                     | Descrição   | Ator           |
@@ -103,16 +120,18 @@ RF05.2 - Registrar Realização da Visita	| Funcionalidade que permite ao técni
 ---
 
 ### Entidade Registrar Conta Receber - RF06 - Registrar Conta Receber 
+
 Ao salvar uma OS é criado um conta receber automaticamente, na qual possuir: id,valor, data de pagamento.
 
 Requisito                     | Descrição   | Ator           |
 ---------                     | ----------- | ----------     |
 RF06.1 - Registrar Conta Receber | Ao salvar uma OS é criado um conta receber automaticamente. | Sistema |
-RF06.2 - Registrar Pagamento Offline | O sistema deve permitir que o funcionário administrativo registre pagamentos recebidos fora do sistema. | Administrador |
+RF06.2 - Registrar Pagamento Offline | O sistema deve permitir que o funcionário administrativo registre pagamentos recebidos fora do sistema. |	Administrativo |
 
 ---
 
 ### Entidade Pagar Conta - RF07 - Pagar Conta
+
 Permitir a funcionalidade ao cliente selecionar uma conta a pagar e com os detalhes do pagamento, incluindo o valor a ser pago, de forma conveniente e segura. 
 
 Requisito                     | Descrição   | Ator                      |
@@ -152,7 +171,7 @@ erDiagram
         string nome
         string endereco
         string contato
-        string tipo  
+        string tipo
     }
     
     CLIENTE_PF {
@@ -245,6 +264,8 @@ erDiagram
     USUARIO ||--o| FUNCIONARIO : "pode ser"
     CLIENTE ||--o| CLIENTE_PF : "classificado PF"
     CLIENTE ||--o| CLIENTE_PJ : "classificado PJ"
+    CLIENTE ||--o{ ORDEM_SERVICO : "solicita"
+    FUNCIONARIO ||--o{ ORDEM_SERVICO : "executa"
     FUNCIONARIO ||--o| TECNICO : "classificado TECNICO"
     FUNCIONARIO ||--o| ADMINISTRATIVO : "classificado ADMINISTRATIVO"
     CLIENTE ||--o{ ORDEM_SERVICO : "solicita"
@@ -283,6 +304,7 @@ RNF04 -	Segurança |	As senhas dos usuários devem ser armazenadas de forma crip
 
 ---
 
+
 ## Riscos
 
 Data | Risco | Prioridade | Responsável | Status | Providência/Solução |
@@ -296,3 +318,4 @@ Data | Risco | Prioridade | Responsável | Status | Providência/Solução |
 
 MODELO BSI – Doc 001 – Documento de Visão. Documento construído a partir do modelo BSI. Disponível em: https://docs.google.com/document/d/1DPBcyGHgflmz5RDsZQ2X8KVBPoEF5PdAz9BBNFyLa6A/edit?usp=sharing
 . Acesso em: 28 mar. 2026.
+

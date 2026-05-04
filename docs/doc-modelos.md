@@ -59,7 +59,7 @@ erDiagram
         float bonus_fixo
     }
     
-    ORDEM_SERVICO {
+ORDEM_SERVICO {
         int id PK
         date data_abertura
         date data_encerramento
