@@ -8,11 +8,11 @@ O Sistema de Assistência Técnica tem como objetivo facilitar o gerenciamento d
 
 ## 🚀 Funcionalidades
 
-* Cadastro e gerenciamento de clientes
-* Cadastro de equipamentos 
-* Criação e controle de ordens de serviço
-* Registro de visitas técnicas
-* Gerenciamento de funcionários
+* Cadastro e gerenciamento de clientes  
+* Cadastro de equipamentos vinculados aos clientes  
+* Criação e controle de ordens de serviço  
+* Registro de visitas técnicas  
+* Gerenciamento de funcionários  
 * Controle financeiro através de contas (pendente, pago, cancelado)
 
 ---
@@ -31,9 +31,9 @@ O Sistema de Assistência Técnica tem como objetivo facilitar o gerenciamento d
 
 O sistema segue uma arquitetura modular, separando responsabilidades em camadas:
 
-* `models/` → Representação das entidades e acesso ao banco
-* `data/` → Banco de dados SQLite
-* `docs/` → Documentação do projeto
+* `models/` → Representação das entidades e acesso ao banco  
+* `data/` → Banco de dados SQLite  
+* `docs/` → Documentação do projeto  
 
 ---
 
@@ -41,9 +41,10 @@ O sistema segue uma arquitetura modular, separando responsabilidades em camadas:
 
 Os artefatos do projeto estão disponíveis na pasta `/docs`:
 
-* 📄 [Documento de Visão](docs/doc-visao.md)
-* 📊 [Modelo de Dados](docs/doc-modelos.md)
-* 📋 [User Stories](docs/doc-userstories.md)
+* 📄 [Documento de Visão](docs/doc-visao.md)  
+* 📊 [Modelo de Dados](docs/doc-modelos.md)  
+* 📋 [User Stories](docs/doc-userstories.md)  
+* 🏗️ [Arquitetura do Software](docs/arquitetura.md)  
 
 ---
 
@@ -100,9 +101,9 @@ uvicorn main:app --reload
 
 O projeto segue a metodologia ágil com **GitFlow**:
 
-* `main` → versão estável
-* `develop` → desenvolvimento
-* `feature/*` → novas funcionalidades
+* `main` → versão estável  
+* `develop` → desenvolvimento  
+* `feature/*` → novas funcionalidades  
 
 Pull Requests são utilizados para revisão de código antes da integração.
 
@@ -128,17 +129,17 @@ Exemplo:
 
 Utilizamos **Conventional Commits**:
 
-* `feat:` nova funcionalidade
-* `fix:` correção de bugs
-* `docs:` documentação
-* `chore:` tarefas gerais
+* `feat:` nova funcionalidade  
+* `fix:` correção de bugs  
+* `docs:` documentação  
+* `chore:` tarefas gerais  
 
 ---
 
 ## 👥 Equipe
 
-* Jadson Hipólito de Almeida
-* Mariana Araújo de Medeiros
+* Jadson Hipólito de Almeida  
+* Mariana Araújo de Medeiros  
 
 ---
 
@@ -150,7 +151,7 @@ O projeto também está sendo gerenciado na plataforma AcademicDevFlow, onde for
 
 ## ✅ Status do Projeto
 
-🚧 Em desenvolvimento
+🚧 Em desenvolvimento  
 
 ---
 

@@ -1,10 +1,12 @@
-
 # Documento de Visão
 
 ## Descrição do Projeto
 
 Título: Sistema de Gestão de Assistência Técnica
-Descrição: O Sistema de Gestão de Assistência Técnica é uma aplicação web que tem como objetivo gerenciar clientes, ordens de serviço, equipamentos e visitas técnicas de forma organizada e eficiente. Ele permite cadastrar e acompanhar ordens de serviço, e gerar relatórios para facilitar o acompanhamento das atividades. O sistema oferece diferentes perfis de usuários, possa acessar as funcionalidades de acordo com suas permissões.
+
+Descrição: O Sistema de Gestão de Assistência Técnica é uma aplicação web que tem como objetivo gerenciar clientes, ordens de serviço, equipamentos e visitas técnicas de forma organizada e eficiente. Ele permite cadastrar e acompanhar ordens de serviço e gerar relatórios para facilitar o acompanhamento das atividades. O sistema oferece diferentes perfis de usuários, permitindo que cada um acesse funcionalidades específicas de acordo com suas permissões.
+
+---
 
 
 ## Equipe e Definição de Papéis
@@ -13,7 +15,10 @@ Membro     |     Papel   |   E-mail   |
 ---------  | ----------- | ---------- |
 Jadson    | --  | -- |
 Mariana     | Analista, Desenvolvedor | araujodemedeirosmariana@gmail.com |
+Jadson    | Líder Técnico, Desenvolvedor, Testador | jadsonhipolito@gmail.com |
+Mariana     | Analista, Desenvolvedor | araujodemedeirosmariana@gmail.com |
 
+---
 
 ### Matriz de Competências
 
@@ -21,6 +26,10 @@ Membro     |     Competências   |
 ---------  | ----------- |
 Jadson    | --  |
 Mariana     | -- | 
+Jadson    | Python, FastAPI, SQLite, Git/GitHub, Modelagem de Dados, Arquitetura de Software |
+Mariana     | -- | 
+
+---
 
 ## Perfis dos Usuários
 
@@ -31,6 +40,10 @@ Perfil                                 | Descrição   |
 Cliente | Este usuário pode verificar suas ordens de serviço, consultar contas a receber e realizar pagamentos online de serviços concluídos.
 Administrativo | Este usuário é responsável pela gestão do sistema, cadastro de informações, controle financeiro e registro de pagamentos recebidos fora do sistema.
 Técnico | Este usuário é responsável pela execução dos serviços, atualização das ordens de serviço e registro de peças utilizadas.
+Administrador | Este usuário é responsável pela gestão do sistema, cadastro de informações, controle financeiro e registro de pagamentos recebidos fora do sistema.
+Técnico | Este usuário é responsável pela execução dos serviços, atualização das ordens de serviço e registro de peças utilizadas.
+
+---
 
 ## Lista de Requisitos Funcionais
 
@@ -45,6 +58,10 @@ RF01.1 - Cadastrar Cliente    | Insere novo novo cliente informando: id, nome, e
 RF01.2 - Alterar Cliente      | Atualiza qualquer dado contido no cadastro do cliente, caso seja necessário. | Administrativo |
 RF01.3 - Consultar Cliente   | Consulta do cliente através dos dados do mesmo. | Administrativo, Técnico |
 RF01.4 - Desativar Cliente   | Desativar um cliente informando o id. | Administrativo |
+RF01.1 - Cadastrar Cliente    | Insere novo cliente informando: id, nome, endereço, contato, CPF. | Administrador |
+RF01.2 - Alterar Cliente      | Atualiza qualquer dado contido no cadastro do cliente, caso seja necessário. | Administrador |
+RF01.3 - Consultar Cliente   | Consulta do cliente através dos dados do mesmo. | Administrador, Técnico |
+RF01.4 - Desativar Cliente   | Desativar um cliente informando o id. | Administrador |
 
 ---
 
@@ -57,6 +74,10 @@ RF02.1 - Cadastrar Funcionário | Insere novo funcionário informando: código, 
 RF02.2 - Alterar Funcionário | Atualiza um funcionário informando: código, nome, CPF, cargo, salario, carteira, expendiente. | Administrativo |
 RF02.3 - Consultar Funcionário |  Consulta do funcionário através dos dados do mesmo. | Administrativo |
 RF02.4 - Desativar Funcionário | Desativar um funcionário informando o id. | Administrativo |
+RF02.1 - Cadastrar Funcionário | Insere novo funcionário informando: código, nome, CPF, cargo, salario, carteira, expediente. | Administrador |
+RF02.2 - Alterar Funcionário | Atualiza um funcionário informando: código, nome, CPF, cargo, salario, carteira, expediente. | Administrador |
+RF02.3 - Consultar Funcionário |  Consulta do funcionário através dos dados do mesmo. | Administrador |
+RF02.4 - Desativar Funcionário | Desativar um funcionário informando o id. | Administrador |
 
 ---
 
@@ -68,6 +89,7 @@ Requisito                     | Descrição   | Ator           |
 RF03.1 - Abrir ordem de Serviço  | Criar de order de serviço para solicitação de reparo ou manutenção, incluir informações sobre o cliente, descrição do problema e quaisquer detalhes relevantes. | Administrador |
 RF03.2 - Editar ordem de serviço | Atualiza uma OS informando:informações sobre o cliente, descrição do problema e quaisquer detalhes relevantes. | Administrador |
 RF03.3 - Consultar ordem de serviço | Consulta uma OS informando: id. | Técnico, Administrador, cliente |
+RF03.3 - Consultar ordem de serviço | Consulta uma OS informando: id. | Técnico, Administrador, Cliente |
 RF03.4 - Atualizar Status da OS         | Alterar o status da OS conforme andamento. | Técnico, Administrador |
 RF03.5 - Encerrar ordem de serviço         | Encerramento da OS após a conclusão das atividades.  | Técnico |
 RF03.6 - Emitir Relatório         | Gerar relatórios diversos, como histórico de serviços realizados, faturamento por período, entre outros.  | Técnico, Administrador |
@@ -86,7 +108,8 @@ RF04.4 - Desativar Equipamento   | Desativa um equipamento informando seu identi
 
 ---
 
-### Entidade Visita Técnica - RF005 - Agendar Visitas Técnicas
+### Entidade Visita Técnica - RF05 - Agendar Visitas Técnicas
+
 Uma visita técnica representa um atendimento presencial vinculado a uma ordem de serviço.
 
 Requisito                     | Descrição   | Ator           |
@@ -96,7 +119,8 @@ RF05.2 - Registrar Realização da Visita	| Funcionalidade que permite ao técni
 
 ---
 
-### Entidade Registrar Conta Receber - RF006 - Registrar Conta Receber 
+### Entidade Registrar Conta Receber - RF06 - Registrar Conta Receber 
+
 Ao salvar uma OS é criado um conta receber automaticamente, na qual possuir: id,valor, data de pagamento.
 
 Requisito                     | Descrição   | Ator           |
@@ -106,14 +130,29 @@ RF06.2 - Registrar Pagamento Offline | O sistema deve permitir que o funcionári
 
 ---
 
-### Entidade Pagar Conta - RF007 - Pagar Conta
+### Entidade Pagar Conta - RF07 - Pagar Conta
+
 Permitir a funcionalidade ao cliente selecionar uma conta a pagar e com os detalhes do pagamento, incluindo o valor a ser pago, de forma conveniente e segura. 
 
 Requisito                     | Descrição   | Ator                      |
 ---------                     | ----------- | ----------                |
-RF07 - Pagar Conta        | Permitir a funcionalidade ao cliente selecionar uma conta a pagar | Cliente  |
+RF07.1 -  Visualizar Contas Pendentes     | Permitir que o cliente visualize todas as suas contas a receber com status PENDENTE ou VENCIDO | Cliente  |
+RF07.2 - Selecionar Conta para Pagamento | Permitir que o cliente selecione uma ou múltiplas contas para realizar o pagamento | Cliente |
+RF07.3 - Realizar Pagamento Online | Integrar com gateway de pagamento para processar o pagamento de forma segura | Cliente, Sistema |
+RF07.4 - Confirmar Pagamento | Atualizar status da conta para PAGO e registrar data_pagamento após confirmação do gateway | Sistema |
+RF07.5 - Emitir Comprovante | Gerar comprovante de pagamento (PDF) para o cliente após confirmação | Sistema |
+RF07.6 - Calcular Multa | Aplicar multa automaticamente para contas vencidas (configurável: 2% + juros 0.33% ao dia) | Sistema |
 
 ---
+
+### Entidade Realizar Login no Sistema - RF08 - Realizar Login
+Permite que usuários (clientes e funcionários) realizem autenticação no sistema com e-mail e senha, conforme tabela USUARIO.
+
+Requisito                     | Descrição   | Ator                      |
+---------                     | ----------- | ----------                |
+RF08.1 - Realizar Login       | Autenticar usuário com e-mail e senha, gerando sessão ou token de acesso | Cliente, Administrador, Técnico |
+RF08.2 - Recuperar Senha      | Permitir que o usuário recupere sua senha via e-mail | Cliente, Administrador, Técnico |
+RF08.3 - Logout               | Encerrar a sessão do usuário no sistema | Cliente, Administrador, Técnico |
 
 ### Modelo Conceitual
 
@@ -155,7 +194,24 @@ erDiagram
         string contato
         float salario
         string tipo
+        date data_admissao
         string horario_expediente
+        string status
+    }
+    
+    TECNICO {
+        int id PK
+        string especialidade
+        string certificacoes
+        int nivel_experiencia
+        float comissao_percentual
+    }
+    
+    ADMINISTRATIVO {
+        int id PK
+        string cargo
+        string setor
+        float bonus_fixo
     }
     
     ORDEM_SERVICO {
@@ -165,6 +221,7 @@ erDiagram
         string descricao_problema
         string status
         float valor_total
+        int garantia_dias
         int cliente_id FK
         int tecnico_id FK
     }
@@ -184,12 +241,14 @@ erDiagram
         date data_realizacao
         string resultado
         int os_id FK
+        int tecnico_id FK
     }
     
     CONTA_RECEBER {
         int id PK
         float valor
         date data_emissao
+        date data_vencimento
         date data_pagamento
         string status_pagamento
         int os_id FK
@@ -207,6 +266,11 @@ erDiagram
     CLIENTE ||--o| CLIENTE_PJ : "classificado PJ"
     CLIENTE ||--o{ ORDEM_SERVICO : "solicita"
     FUNCIONARIO ||--o{ ORDEM_SERVICO : "executa"
+    FUNCIONARIO ||--o| TECNICO : "classificado TECNICO"
+    FUNCIONARIO ||--o| ADMINISTRATIVO : "classificado ADMINISTRATIVO"
+    CLIENTE ||--o{ ORDEM_SERVICO : "solicita"
+    TECNICO ||--o{ ORDEM_SERVICO : "responsavel"
+    TECNICO ||--o{ VISITA_TECNICA : "realiza"
     ORDEM_SERVICO ||--o{ VISITA_TECNICA : "gera"
     ORDEM_SERVICO ||--|| CONTA_RECEBER : "gera"
     ORDEM_SERVICO ||--o{ ORDEM_SERVICO_EQUIPAMENTO : "contem"
@@ -228,6 +292,7 @@ Ordem de Serviço Equipamento | Tabela de relacionamento muitos-para-muitos entr
 Visita Técnica | Vinculada a uma OS, registra agendamentos e realizações de atendimentos presenciais. |
 Conta a Receber	| Gerada automaticamente ao encerrar uma OS, registra o valor a ser pago pelo cliente. |
 
+
 ## Lista de Requisitos Não-Funcionais
 
 Requisito                                 | Descrição   |
@@ -236,6 +301,9 @@ RNF001 - Deve ser acessível via navegador | Deve abrir perfeitamento no Firefox
 RNF002 - Disponibilidade do Sistema |O sistema deve estar disponível 24/7, com um tempo de inatividade mínimo para manutenção programada. |
 RNF003 - Usabilidade | O sistema deverá possuir uma interface intuitiva e de fácil utilização, permitindo que usuários com pouca experiência em sistemas consigam utilizá-lo sem dificuldades significativas. |
 RNF04 -	Segurança |	As senhas dos usuários devem ser armazenadas de forma criptografada (hash). O controle de acesso deve ser rigorosamente baseado nos perfis definidos. |
+
+---
+
 
 ## Riscos
 
