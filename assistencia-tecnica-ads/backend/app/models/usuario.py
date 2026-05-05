@@ -12,8 +12,9 @@ class Usuario(Base):
     criado_em = Column(DateTime(timezone=True), server_default=func.now())
     atualizado_em = Column(DateTime(timezone=True), onupdate=func.now())
 
-    # Relacionamento com clientes
+    # Relacionamentos
     clientes = relationship("Cliente", back_populates="usuario")
+    funcionarios = relationship("Funcionario", back_populates="usuario")
 
     def __repr__(self):
         return f"<Usuario(id={self.id}, email={self.email})>"
