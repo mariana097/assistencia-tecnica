@@ -5,8 +5,19 @@ from .config import config
 from .database import engine, Base
 from .routers import auth_router, cliente_router, funcionario_router
 
-# Criar tabelas no banco de dados
-Base.metadata.create_all(bind=engine)
+
+# =========================================================
+# ❌ REMOVIDO: Base.metadata.create_all(bind=engine)
+# =========================================================
+# Isso NÃO pode rodar no import, pois quebra os testes.
+
+
+# =========================================================
+# ✔ Função segura para inicializar banco
+# =========================================================
+def init_db():
+    Base.metadata.create_all(bind=engine)
+
 
 # Criar instância do FastAPI
 app = FastAPI(
@@ -30,6 +41,7 @@ app.include_router(auth_router.router, prefix="/api/auth", tags=["Autenticação
 app.include_router(cliente_router.router, prefix="/api/clientes", tags=["Clientes"])
 app.include_router(funcionario_router.router, prefix="/api/funcionarios", tags=["Funcionários"])
 
+
 # Rota raiz
 @app.get("/")
 def root():
@@ -39,10 +51,12 @@ def root():
         "version": config.APP_VERSION
     }
 
+
 # Rota de saúde
 @app.get("/health")
 def health_check():
     return {"status": "healthy"}
+
 
 # Rota de informações
 @app.get("/api/info")
@@ -62,3 +76,10 @@ def get_info():
             "/api/contas"
         ]
     }
+
+
+# =========================================================
+# ✔ Inicialização apenas quando rodar diretamente
+# =========================================================
+if __name__ == "__main__":
+    init_db()
