@@ -1,43 +1,25 @@
 from pydantic import BaseModel, ConfigDict, EmailStr
-from datetime import date, datetime
+from datetime import datetime
 from typing import Optional
-from .usuario_schema import UsuarioResponse
 
-# Schema para dados de pessoa física
-class PessoaFisicaBase(BaseModel):
-    cpf: str
-    data_nascimento: date
-
-# Schema para criação de cliente
-class ClienteCreate(BaseModel):
+class ClienteBase(BaseModel):
     nome: str
-    endereco: str
-    contato: str
-    tipo: str  # "PF" ou "PJ"
-    usuario_id: int
-    pf_data: Optional[PessoaFisicaBase] = None  # Dados específicos para PF
+    email: EmailStr
+    telefone: str
+    endereco: Optional[str] = None
 
-# Schema para atualização de cliente
+class ClienteCreate(ClienteBase):
+    pass
+
 class ClienteUpdate(BaseModel):
     nome: Optional[str] = None
+    email: Optional[EmailStr] = None
+    telefone: Optional[str] = None
     endereco: Optional[str] = None
-    contato: Optional[str] = None
-    tipo: Optional[str] = None
-    pf_data: Optional[PessoaFisicaBase] = None
 
-# Schema para resposta de cliente
-class ClienteResponse(BaseModel):
+class ClienteResponse(ClienteBase):
     id: int
-    nome: str
-    endereco: str
-    contato: str
-    tipo: str
-    usuario_id: int
-    criado_em: Optional[datetime]
-    atualizado_em: Optional[datetime]
-    cpf: Optional[str]
-    data_nascimento: Optional[date]
-    usuario: Optional[UsuarioResponse] = None
-
+    data_cadastro: datetime
+    ativo: bool
+    
     model_config = ConfigDict(from_attributes=True)
-from_attributes = True

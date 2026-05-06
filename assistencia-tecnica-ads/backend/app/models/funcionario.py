@@ -1,26 +1,14 @@
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Boolean, Float
+from sqlalchemy import Column, Integer, String, DateTime, Boolean
 from sqlalchemy.sql import func
-from sqlalchemy.orm import relationship
-from ..database import Base
+from app.database import Base
 
 class Funcionario(Base):
     __tablename__ = "funcionarios"
-
+    
     id = Column(Integer, primary_key=True, index=True)
-    nome = Column(String(255), nullable=False)
-    endereco = Column(String, nullable=False)
-    contato = Column(String(50), nullable=False)
-    horario = Column(String(100), nullable=True)
-    salario = Column(Float, nullable=True)
-    cnpj = Column(String(14), nullable=True)
+    nome = Column(String(100), nullable=False)
+    email = Column(String(100), unique=True, index=True, nullable=False)
+    cargo = Column(String(50), nullable=False)
+    telefone = Column(String(20), nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
     ativo = Column(Boolean, default=True)
-
-    usuario_id = Column(Integer, ForeignKey("usuarios.id"), nullable=False)
-
-    criado_em = Column(DateTime(timezone=True), server_default=func.now())
-    atualizado_em = Column(DateTime(timezone=True), onupdate=func.now())
-
-    usuario = relationship("Usuario", back_populates="funcionarios")
-
-    def __repr__(self):
-        return f"<Funcionario(id={self.id}, nome={self.nome})>"

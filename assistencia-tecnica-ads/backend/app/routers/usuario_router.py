@@ -13,16 +13,17 @@ router = APIRouter(prefix="/usuarios", tags=["Usuários"])
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 def get_password_hash(password):
+    # Limitar tamanho da senha para evitar erro do bcrypt
+    if len(password) > 72:
+        password = password[:72]
     return pwd_context.hash(password)
 
 @router.post("/", response_model=UsuarioResponse, status_code=status.HTTP_201_CREATED)
 def criar_usuario(usuario: UsuarioCreate, db: Session = Depends(get_db)):
-    # Verificar se email já existe
     usuario_existente = db.query(Usuario).filter(Usuario.email == usuario.email).first()
     if usuario_existente:
         raise HTTPException(status_code=400, detail="Email já cadastrado")
     
-    # Criar novo usuário
     novo_usuario = Usuario(
         nome=usuario.nome,
         email=usuario.email,
@@ -36,7 +37,7 @@ def criar_usuario(usuario: UsuarioCreate, db: Session = Depends(get_db)):
 
 @router.get("/", response_model=List[UsuarioResponse])
 def listar_usuarios(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    usuarios = db.query(Usuario).filter(Usuario.ativo == True).offset(skip).limit(limit).all()
+    usuarios = db.query(Usuario).offset(skip).limit(limit).all()
     return usuarios
 
 @router.get("/{usuario_id}", response_model=UsuarioResponse)
@@ -53,7 +54,9 @@ def atualizar_usuario(usuario_id: int, usuario_update: UsuarioUpdate, db: Sessio
         raise HTTPException(status_code=404, detail="Usuário não encontrado")
     
     update_data = usuario_update.model_dump(exclude_unset=True)
-    if "senha" in update_data:
+    if "senha" in update_data and update_data["senha"]:
+        if len(update_data["senha"]) > 72:
+            update_data["senha"] = update_data["senha"][:72]
         update_data["senha_hash"] = get_password_hash(update_data.pop("senha"))
     
     for field, value in update_data.items():
@@ -69,7 +72,6 @@ def deletar_usuario(usuario_id: int, db: Session = Depends(get_db)):
     if not usuario:
         raise HTTPException(status_code=404, detail="Usuário não encontrado")
     
-    # Soft delete
-    usuario.ativo = False
+    db.delete(usuario)
     db.commit()
     return None
