@@ -1,22 +1,35 @@
-# Configuração do banco de dados SQLAlchemy
 from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, declarative_base
+import os
 from .config import config
 
-# Criar engine do banco de dados
+# Diretório base do projeto (app/)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# Garante caminho absoluto do SQLite
+if config.DATABASE_URL.startswith("sqlite"):
+    DB_PATH = os.path.join(BASE_DIR, "..", "..", "data", "database.sqlite")
+    DATABASE_URL = f"sqlite:///{os.path.abspath(DB_PATH)}"
+else:
+    DATABASE_URL = config.DATABASE_URL
+
+# Engine do banco
 engine = create_engine(
-    config.DATABASE_URL,
-    connect_args={"check_same_thread": False}  # Necessário para SQLite
+    DATABASE_URL,
+    connect_args={"check_same_thread": False}  # necessário só para SQLite
 )
 
-# Criar sessão
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+# Sessão
+SessionLocal = sessionmaker(
+    autocommit=False,
+    autoflush=False,
+    bind=engine
+)
 
-# Base para os modelos
+# Base dos modelos
 Base = declarative_base()
 
-# Dependência para obter a sessão do banco
+# Dependência do FastAPI
 def get_db():
     db = SessionLocal()
     try:
