@@ -2,27 +2,34 @@ from pydantic import BaseModel, ConfigDict, EmailStr
 from datetime import datetime
 from typing import Optional
 
-# Schema para criação de usuário
-class UsuarioCreate(BaseModel):
+class UsuarioBase(BaseModel):
+    nome: str
     email: EmailStr
+    tipo: str = "comum"
+
+class UsuarioCreate(UsuarioBase):
     senha: str
 
-# Schema para login
 class UsuarioLogin(BaseModel):
     email: EmailStr
     senha: str
 
-# Schema para resposta (não retorna a senha)
-class UsuarioResponse(BaseModel):
+class UsuarioResponse(UsuarioBase):
     id: int
-    email: EmailStr
-    criado_em: Optional[datetime]
-    atualizado_em: Optional[datetime]
-
+    ativo: bool
+    created_at: datetime
+    updated_at: Optional[datetime] = None
+    
     model_config = ConfigDict(from_attributes=True)
-from_attributes = True
 
-# Schema para token JWT
+class UsuarioUpdate(BaseModel):
+    nome: Optional[str] = None
+    email: Optional[EmailStr] = None
+    tipo: Optional[str] = None
+    ativo: Optional[bool] = None
+    senha: Optional[str] = None
+
+# Classes para autenticação JWT
 class Token(BaseModel):
     access_token: str
     token_type: str
