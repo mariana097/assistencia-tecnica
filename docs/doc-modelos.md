@@ -71,7 +71,6 @@ classDiagram
         -string modelo
         -string numero_serie
         -string cor
-        -string acessorios
         -string observacoes
         -int cliente_id
         +getHistoricoOS() List~OrdemServico~
@@ -222,7 +221,7 @@ Cliente CNPJ	| Especialização de CLIENTE para pessoa jurídica. Adiciona os at
 Funcionário	 | Entidade que representa um funcionário da assistência técnica, estendendo USUARIO. Contém dados como nome, cpf, contato, salario, data_admissao, horario_expediente e status. Possui o método +registrarPonto() para controle de jornada. |
 Técnico | Especialização de FUNCIONARIO para técnicos especializados. Adiciona especialidade, certificacoes, nivel_experiencia e comissao_percentual. Possui os métodos +executarServico() e +calcularComissao() para gestão de serviços e remuneração variável.|
 Administrador | Especialização de FUNCIONARIO para administradores do sistema. Adiciona cargo, setor e bonus_fixo. Possui o método +gerenciarFuncionarios() para administração da equipe. |
-Aparelho  | Entidade que representa os equipamentos dos clientes que serão reparados. Contém informações técnicas: tipo, marca, modelo, numero_serie, cor, acessorios, observacoes e cliente_id. Possui os métodos +getHistoricoOS() para consultar todas as ordens de serviço do aparelho e +atualizarObservacoes() para manutenção do registro. |
+Aparelho  | Entidade que representa os equipamentos dos clientes que serão reparados. Contém informações técnicas: tipo, marca, modelo, numero_serie, cor, observacoes e cliente_id. Possui os métodos +getHistoricoOS() para consultar todas as ordens de serviço do aparelho e +atualizarObservacoes() para manutenção do registro. |
 Ordem de Serviço | Entidade central que representa uma ordem de serviço aberta para reparo. Contém data_abertura, data_encerramento, descricao_problema, status, valor_total, cliente_id, tecnico_id e aparelho_id. Possui métodos para +calcularValorTotal(), +alterarStatus(), +adicionarServico(), +removerServico() e +imprimirRelatorio(). |
 Serviço | Entidade que representa um tipo de serviço oferecido pela assistência (ex: limpeza, troca de tela, reparo de placa). Contém nome, descricao, valor_padrao e tempo_estimado. Possui métodos para +aplicarDesconto() e +calcularTempoTotal(). |
 Serviço_executado | Entidade associativa que registra a execução de um serviço específico em uma ordem de serviço. Contém garantia_dias,valor_cobrado (que pode ser diferente do valor padrão), observacoes, ordem_servico_id e servico_id. Possui o método +registrarExecucao() e +calcularGarantia() para formalizar a realização do serviço. |
@@ -295,8 +294,7 @@ erDiagram
         string marca
         string modelo
         string numero_serie
-        string cor
-        string acessorios
+        string cor        
         string observacoes
         int cliente_id FK       
     }
@@ -499,7 +497,7 @@ ORDEM_SERVICO {
 
 |   Tabela   | APARELHO |
 | ---------- | ----------- |
-| Descrição  | Representa os equipamentos dos clientes que serão reparados. |
+| Descrição  | Representa os aparelhos dos clientes que precisam de manutenção ou serão reparados. |
 | Observação | Um cliente pode possuir vários aparelhos. O aparelho é vinculado a uma ou mais Ordens de Serviço ao longo do tempo. |
 
 |  Nome         | Descrição                        | Tipo de Dado | Tamanho | Restrições de Domínio |
@@ -510,7 +508,6 @@ ORDEM_SERVICO {
 | modelo | Modelo do aparelho | VARCHAR | 20 | --- |
 | numero_serie | numero_serie | VARCHAR | 50 | UNIQUE |
 | cor | Cor do aparelho | VARCHAR |	30 | --- |
-| acessorios | Acessórios que acompanham o aparelho	| TEXT | --- | --- |
 | observacoes |	Observações adicionais sobre o aparelho | TEXT | --- | --- |
 | cliente_id | Referência ao cliente proprietário |	INT	| --- |	FK (CLIENTE.id) / NOT NULL |
 
