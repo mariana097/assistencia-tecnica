@@ -1,20 +1,17 @@
 # Lista de User Stories
 
-| ID   | Título                              | Descrição                                                                 | Requisitos Funcionais | Responsável |
-|------|-------------------------------------|--------------------------------------------------------------------------|----------------------|------------|
-| US01 | Cadastrar cliente                   | Como atendente, quero cadastrar clientes para registrar seus dados       | RF01                 | Jadson     |
-| US02 | Atualizar cliente                   | Como atendente, quero atualizar dados do cliente para manter informações corretas | RF01         | Mariana    |
-| US03 | Consultar cliente                   | Como atendente ou técnico, quero consultar clientes para visualizar informações e histórico |
-| US03 | Desativar cliente                   | Como administrador, quero desativr clientes para manter o sistema organizado | RF01              | Jadson     |
-| US04 | Cadastrar equipamento               | Como atendente, quero cadastrar equipamentos para registrar itens do cliente | RF02             | Mariana    |
-| US06 | Criar ordem de serviço              | Como técnico, quero criar ordens de serviço para registrar atendimentos   | RF03                 | Mariana    |
-| US07 | Atualizar status da OS              | Como técnico, quero atualizar o status da ordem para acompanhar progresso | RF03                 | Jadson     |
-| US08 | Vincular equipamentos à OS          | Como técnico, quero adicionar equipamentos à ordem de serviço             | RF03                 | Mariana    |
-| US09 | Registrar visita técnica            | Como técnico, quero registrar visitas para documentar atendimentos        | RF04                 | Jadson     |
-| US10 | Gerenciar funcionários              | Como administrador, quero cadastrar funcionários para controle interno    | RF05                 | Mariana    |
-| US11 | Gerar conta da ordem de serviço     | Como sistema, quero gerar contas automaticamente para controle financeiro | RF03                 | Jadson     |
-| US12 | Marcar conta como paga              | Como administrador, quero atualizar o status da conta para controle financeiro | RF03           | Mariana    |
-=======
+| ID   | Título      | Descrição                                                     | Requisitos Funcionais | Responsável |
+|------|-------------|---------------------------------------------------------------|----------------------|--------------|
+| US00 | Manter Usuário | O sistema deve manter um cadastro de usuário que tem acesso ao sistema via login e senha. Um usuário tem os atributos id, email, senha. O email será o login e ele pode registrar-se diretamente no sistema. Além disso o usuário poderá alterar alguns dados, como o e-mail ou a senha. O usuário administrador do sistema pode realizar as operações de adicionar, alterar, remover e listar os usuários comuns do sistema.| RF00 | Mariana |     
+| US01 | Manter cliente | O sistema deve manter um cadastro de cliente que tem acesso ao sistema via login e senha. Um cliente tem os atributos nome, id, endereço, contato. Além disso o usuário poderá alterar alguns dados, como o e-mail ou a senha. O usuário administrador do sistema pode realizar as operações de adicionar, alterar, desativar e listar os clientes do sistema.| RF01 | Jadson |
+| US02 | Manter Funcionario  |  | RF02 | Mariana    |
+| US03 | Gerenciar APARELHO  |  | RF03 | Jadson |
+| US04 | Ordens de Serviço |  | RF04 |     |
+| US05 | Gerenciar Equipamentos  |  | RF05 |     |
+| US06 | Gerenciar Visita Técnica  |    | RF06                 |     |
+| US07 | Gerar conta da ordem de serviço  |  | RF07  |      |
+| US08 | Marcar conta como paga          |             | RF08                 |     |
+---
 # Documento Lista de User Stories
 
 Documento construído a partir do **Modelo BSI - Doc 004 - Lista de User Stories**.

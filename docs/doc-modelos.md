@@ -17,7 +17,6 @@ classDiagram
         -string nome
         -string endereco
         -string contato
-        -string tipo
         +solicitarOrdemServico(): void
     }
     
@@ -38,7 +37,6 @@ classDiagram
         -string cpf
         -string contato
         -float salario
-        -string tipo
         -date data_admissao
         -string horario_expediente
         -string status
@@ -81,16 +79,14 @@ classDiagram
         -date data_encerramento
         -string descricao_problema
         -string status
-        -float valor_total
-        -int garantia_dias
+        -float valor_total        
         -int cliente_id
         -int tecnico_id
         -int aparelho_id
         +calcularValorTotal(): float
         +alterarStatus(novoStatus: string): void
         +adicionarServico(servico: SERVICO_EXECUTADO): void
-        +removerServico(servico_id: int): bool
-        +calcularGarantia(): date
+        +removerServico(servico_id: int): bool        
         +imprimirRelatorio(): string
     }
     
@@ -106,11 +102,13 @@ classDiagram
     
     class SERVICO_EXECUTADO {
         -int id
+        -int garantia_dias
         -float valor_cobrado
         -string observacoes
         -int ordem_servico_id
         -int servico_id
         +registrarExecucao(): void
+        +calcularGarantia(): date
     }
     
     class EQUIPAMENTO {
@@ -198,16 +196,16 @@ classDiagram
 Entidade                          |	Descrição   |
 ---------                         | ----------- |
 Usuário	   | Entidade base abstrata para representar informações gerais de acesso ao sistema: id, email, senha. Possui o método +autenticar(email, senha) para validação de credenciais. |
-Cliente	   | Entidade que representa um cliente do sistema, estendendo USUARIO. Contém informações cadastrais: nome, endereco, contato, tipo (PF/PJ). Possui o método +solicitarOrdemServico() para abertura de novas ordens de serviço. |
+Cliente	   | Entidade que representa um cliente do sistema, estendendo USUARIO. Contém informações cadastrais: nome, endereco, contato. Possui o método +solicitarOrdemServico() para abertura de novas ordens de serviço. |
 Cliente CPF	| Especialização de CLIENTE para pessoa física. Adiciona os atributos cpf e data_nascimento. |
 Cliente CNPJ	| Especialização de CLIENTE para pessoa jurídica. Adiciona os atributos cnpj, razao_social e nome_fantasia. |
-Funcionário	 | Entidade que representa um funcionário da assistência técnica, estendendo USUARIO. Contém dados como nome, cpf, contato, salario, tipo, data_admissao, horario_expediente e status. Possui o método +registrarPonto() para controle de jornada. |
+Funcionário	 | Entidade que representa um funcionário da assistência técnica, estendendo USUARIO. Contém dados como nome, cpf, contato, salario, data_admissao, horario_expediente e status. Possui o método +registrarPonto() para controle de jornada. |
 Técnico | Especialização de FUNCIONARIO para técnicos especializados. Adiciona especialidade, certificacoes, nivel_experiencia e comissao_percentual. Possui os métodos +executarServico() e +calcularComissao() para gestão de serviços e remuneração variável.|
 Administrador | Especialização de FUNCIONARIO para administradores do sistema. Adiciona cargo, setor e bonus_fixo. Possui o método +gerenciarFuncionarios() para administração da equipe. |
 Aparelho  | Entidade que representa os equipamentos dos clientes que serão reparados. Contém informações técnicas: tipo, marca, modelo, numero_serie, cor, acessorios, observacoes e cliente_id. Possui os métodos +getHistoricoOS() para consultar todas as ordens de serviço do aparelho e +atualizarObservacoes() para manutenção do registro. |
-Ordem de Serviço | Entidade central que representa uma ordem de serviço aberta para reparo. Contém data_abertura, data_encerramento, descricao_problema, status, valor_total, garantia_dias, cliente_id, tecnico_id e aparelho_id. Possui métodos para +calcularValorTotal(), +alterarStatus(), +adicionarServico(), +removerServico(), +calcularGarantia() e +imprimirRelatorio(). |
+Ordem de Serviço | Entidade central que representa uma ordem de serviço aberta para reparo. Contém data_abertura, data_encerramento, descricao_problema, status, valor_total, cliente_id, tecnico_id e aparelho_id. Possui métodos para +calcularValorTotal(), +alterarStatus(), +adicionarServico(), +removerServico() e +imprimirRelatorio(). |
 Serviço | Entidade que representa um tipo de serviço oferecido pela assistência (ex: limpeza, troca de tela, reparo de placa). Contém nome, descricao, valor_padrao e tempo_estimado. Possui métodos para +aplicarDesconto() e +calcularTempoTotal(). |
-Serviço_executado | Entidade associativa que registra a execução de um serviço específico em uma ordem de serviço. Contém valor_cobrado (que pode ser diferente do valor padrão), observacoes, ordem_servico_id e servico_id. Possui o método +registrarExecucao() para formalizar a realização do serviço. |
+Serviço_executado | Entidade associativa que registra a execução de um serviço específico em uma ordem de serviço. Contém garantia_dias,valor_cobrado (que pode ser diferente do valor padrão), observacoes, ordem_servico_id e servico_id. Possui o método +registrarExecucao() e +calcularGarantia() para formalizar a realização do serviço. |
 Equipamento	| Entidade que representa insumos, ferramentas ou peças do estoque da assistência. Contém codigo, tipo, marca, modelo, quantidade, status, numero_serie, data_aquisicao e valor_compra. Possui métodos para +diminuirEstoque(), +verificarDisponibilidade() e +reporEstoque() para controle de inventário. |
 Equipamento_usado | Entidade associativa que registra quais equipamentos/peças foram consumidos ou utilizados em cada serviço executado. Contém horas_utilizadas, observacoes, servico_executado_id, equipamento_id e quantidade. Possui o método +calcularCustoUso() para apurar o custo dos insumos aplicados. |
 Visita Técnica | Entidade que representa visitas realizadas por técnicos na residência do cliente. Contém data_agendamento, data_realizacao, resultado, os_id e tecnico_id. Possui métodos para +registrarVisita(), +reagendar() e +cancelar() para gestão do atendimento externo. |
@@ -215,7 +213,7 @@ Conta a Receber	| Entidade que representa as obrigações financeiras geradas pe
 
 ---
 
-## Modelo de Dados (Entidade-Relacionamento) usando Mermaid
+## Diagrama Entidade-Relacionamento
 
 ```mermaid
 erDiagram
@@ -230,7 +228,6 @@ erDiagram
         string nome
         string endereco
         string contato
-        string tipo
     }
     
     CLIENTE_PF {
@@ -251,8 +248,7 @@ erDiagram
         string nome
         string cpf
         string contato
-        float salario
-        string tipo
+        float salario        
         date data_admissao
         string horario_expediente
         string status
@@ -291,8 +287,7 @@ ORDEM_SERVICO {
         date data_encerramento
         string descricao_problema
         string status
-        float valor_total
-        int garantia_dias
+        float valor_total        
         int cliente_id FK
         int tecnico_id FK
         int aparelho_id FK
@@ -308,6 +303,7 @@ ORDEM_SERVICO {
     
     SERVICO_EXECUTADO {
         int id PK
+        int garantia_dias
         float valor_cobrado
         string observacoes
         int ordem_servico_id FK
@@ -361,12 +357,12 @@ ORDEM_SERVICO {
     }    
       
     %% Relacionamentos de Herança (Generalização/Especialização)
-    USUARIO ||--o{ CLIENTE : "pode ser"
-    USUARIO ||--o{ FUNCIONARIO : "pode ser"
-    CLIENTE ||--o| CLIENTE_PF : "classificado como"
-    CLIENTE ||--o| CLIENTE_PJ : "classificado como"
-    FUNCIONARIO ||--o| TECNICO : "atua como"
-    FUNCIONARIO ||--o| ADMINISTRADOR : "atua como"
+    USUARIO ||--|| CLIENTE : "é um"
+    USUARIO ||--|| FUNCIONARIO : "é um"
+    CLIENTE ||--|| CLIENTE_PF : "é um"
+    CLIENTE ||--|| CLIENTE_PJ : "é um"
+    FUNCIONARIO ||--|| TECNICO : "é um"
+    FUNCIONARIO ||--|| ADMINISTRADOR : "é um"
 
     %% Relacionamentos de Associação
     CLIENTE ||--o{ APARELHO : "possui"
@@ -400,7 +396,7 @@ ORDEM_SERVICO {
 |   Tabela   | CLIENTE |
 | ---------- | ----------- |
 | Descrição  | Armazena as informações gerais dos clientes da assistência técnica. |
-| Observação | Clientes podem ser Pessoa Física (PF) ou Pessoa Jurídica (PJ). A diferenciação é feita pelo campo classificado, com dados complementares armazenados nas tabelas Cliente_PF e Cliente_PJ. |
+| Observação | Clientes podem ser Pessoa Física (PF) ou Pessoa Jurídica (PJ). |
 
 |  Nome         | Descrição                        | Tipo de Dado | Tamanho | Restrições de Domínio |
 | ------------- | -------------------------------- | ------------ | ------- | --------------------- |
@@ -408,7 +404,6 @@ ORDEM_SERVICO {
 | nome | Nome completo do cliente (PF) ou razão social (PJ) | VARCHAR | 150 | Not Null |
 | endereco  | Endereço completo do cliente | VARCHAR | 200 | --- |
 | contato | Telefone para contato | VARCHAR | 20 | --- |
-| tipo | Classificação do cliente (PF ou PJ) | VARCHAR | 2 | CHECK (tipo IN ('PF','PJ')) / NOT NULL |
 
 
 |   Tabela   | CLIENTE_PF |
@@ -440,7 +435,7 @@ ORDEM_SERVICO {
 |   Tabela   | FUNCIONARIO |
 | ---------- | ----------- |
 | Descrição  | Armazena as informações gerais dos funcionários da assistência técnica. |
-| Observação | Funcionários podem ser técnico ou administrativo. A diferenciação é feita pelo campo classificado, com dados complementares armazenados nas tabelas Técnico e Administrador. |
+| Observação | Funcionários podem ser técnico ou administrativo. |
 
 |  Nome         | Descrição                        | Tipo de Dado | Tamanho | Restrições de Domínio |
 | ------------- | -------------------------------- | ------------ | ------- | --------------------- |
@@ -449,7 +444,6 @@ ORDEM_SERVICO {
 | cpf |	Cadastro de Pessoa Física |	VARCHAR | 14 | Unique / Not Null |
 | contato | Telefone para contato | VARCHAR | 20 | --- |
 | salario |	Salário base do funcionário | DECIMAL(10,2) | --- |	NOT NULL / CHECK (salario >= 0) |
-| tipo | Classificação do funcionário (técnico ou administrativo) | VARCHAR | 15 | CHECK (tipo IN ('TECNICO','ADMINISTRADOR')) / Not Null |
 | data_admissao	| Data de contratação |	DATE | --- | Not Null |
 | horario_expediente | Horário de trabalho | VARCHAR | 50 |	--- |
 | status |	Situação do funcionário	| VARCHAR |	10	| CHECK (status IN ('ATIVO','FERIAS','AFASTADO','DESATIVADO')) / DEFAULT 'ATIVO' |
@@ -458,7 +452,7 @@ ORDEM_SERVICO {
 |   Tabela   | TECNICO |
 | ---------- | ----------- |
 | Descrição  | Responsável pela execução de Ordens de Serviço e Visitas Técnicas. Armazena dados específicos como especialidade, certificações, nível de experiência e comissão percentual. |
-| Observação | Especialização da tabela FUNCIONARIO. Todo técnico deve ter um registro correspondente na tabela FUNCIONARIO com tipo = 'TECNICO'. |
+| Observação | Especialização da tabela FUNCIONARIO. A identificação do tipo é feita pela existência do registro nesta tabela (via LEFT JOIN). |
 
 |  Nome         | Descrição                        | Tipo de Dado | Tamanho | Restrições de Domínio |
 | ------------- | -------------------------------- | ------------ | ------- | --------------------- |
@@ -472,13 +466,13 @@ ORDEM_SERVICO {
 |   Tabela   | ADMINISTRADOR |
 | ---------- | ----------- |
 | Descrição  | Responsável pela gestão, emissão de contas, cadastro de clientes etc. |
-| Observação | Especialização da tabela FUNCIONARIO. Todo administrador deve ter um registro correspondente na tabela FUNCIONARIO com tipo = 'ADMINISTRADOR'. |
+| Observação | Especialização da tabela FUNCIONARIO. A identificação do tipo é feita pela existência do registro nesta tabela (via LEFT JOIN). |
 
 |  Nome         | Descrição                        | Tipo de Dado | Tamanho | Restrições de Domínio |
 | ------------- | -------------------------------- | ------------ | ------- | --------------------- |
 | id | Identificador único(FK para FUNCIONARIO) | INT | --- | PK / FK |
 | cargo | Cargo administrativo | VARCHAR | 80 | Not Null |
-| setor | Nível hierárquico (1-5) | INT | --- | CHECK (nivel_experiencia BETWEEN 1 AND 5) |
+| setor | Setor de atuação (ex: Financeiro, RH, Operações) | VARCHAR | 80 | --- |
 |bonus_fixo | Bônus mensal fixo | DECIMAL(10,2) | --- |	DEFAULT 0.00 / CHECK (bonus_fixo >= 0) |
 
 ---
@@ -515,7 +509,6 @@ ORDEM_SERVICO {
 | descricao_problema | Descrição detalhada do problema relatado pelo cliente | TEXT | --- |	NOT NULL |
 | status | Situação atual da Ordem de Serviço |	VARCHAR | 20 | CHECK (status IN ('ABERTA', 'EM_ANDAMENTO', 'AGUARDANDO_PECA', 'FINALIZADA', 'CANCELADA')) / DEFAULT 'ABERTA' |
 | valor_total |	Valor total do serviço (mão de obra + equipamentos) | DECIMAL(10,2) | --- |	DEFAULT 0.00 / CHECK (valor_total >= 0) |
-| garantia_dias | Dias de garantia do serviço prestado | INT | --- |  DEFAULT 90 |
 | cliente_id | Referência ao cliente solicitante | INT | --- | FK para CLIENTE(id) / NOT NULL |
 | tecnico_id | Referência ao técnico responsável | INT | --- | FK para TECNICO(id) |
 | aparelho_id |	Referência ao aparelho consertado |	INT	| --- |	FK (APARELHO.id) / NOT NULL |
@@ -545,6 +538,7 @@ ORDEM_SERVICO {
 |  Nome         | Descrição                        | Tipo de Dado | Tamanho | Restrições de Domínio |
 | ------------- | -------------------------------- | ------------ | ------- | --------------------- |
 | id | Identificador único | SERIAL / INT |	--- | PK / Identity |
+| garantia_dias | Dias de garantia do serviço prestado | INT | --- |  DEFAULT 90 |
 | valor_cobrado | Valor efetivamente cobrado pelo serviço |	DECIMAL(10,2) |	--- | NOT NULL / CHECK (valor_cobrado >= 0) |
 | observacoes |	Observações sobre a execução do serviço | TEXT| --- | --- |
 | ordem_servico_id | Referência à Ordem de Serviço | INT | --- | FK (ORDEM_SERVICO.id) / NOT NULL |
@@ -566,7 +560,7 @@ ORDEM_SERVICO {
 | modelo | Modelo do equipamento | VARCHAR | 20 | --- |
 | quantidade | Quantidade disponível em estoque | INT | --- | DEFAULT 0 / CHECK (quantidade >= 0) |
 | status | Situação do equipamento | VARCHAR | 10 | CHECK (status IN ('ATIVO','DESATIVADO')) / DEFAULT 'ATIVO' |
-| numero_serie | Número de série (para itens únicos) | VARCHAR | 100 | --- |
+| numero_serie | Número de série (para itens únicos) | VARCHAR | 50 | UNIQUE |
 | data_aquisicao |	Data de compra do equipamento |	DATE | --- | --- |
 | valor_compra | Valor de compra do equipamento	| DECIMAL(10,2) | --- |	CHECK (valor_compra >= 0) |
 
@@ -613,13 +607,13 @@ ORDEM_SERVICO {
 | ------------- | -------------------------------- | ------------ | ------- | --------------------- |
 | id | Identificador único do pagamento | SERIAL / INT | --- | PK / Identity |
 | valor_original | Valor original da OS (sem multa/juros)  | DECIMAL(10,2) | --- | NOT NULL / CHECK (valor_original > 0) |
-| multa | Multa fixa de 2% sobre valor_original (se vencido) | DECIMAL(10,2) | --- | DEFAULT 0.00 / CHECK (multa >= 0) |
-| juros | Juros de 0,33% ao dia de atraso | DECIMAL(10,2) | --- | DEFAULT 0.00 / CHECK (juros >= 0) |
+| multa | Multa fixa sobre valor_original (se vencido) | DECIMAL(10,2) | --- | DEFAULT 0.00 / CHECK (multa >= 0) |
+| juros | Juros ao dia de atraso | DECIMAL(10,2) | --- | DEFAULT 0.00 / CHECK (juros >= 0) |
 | valor_total |	Valor total (original + multa + juros) | DECIMAL(10,2) | --- |	NOT NULL / CHECK (valor_total >= 0)|
 | data_emissao  | Data de emissão da conta | DATE | --- | NOT NULL / DEFAULT CURRENT_DATE |
 | data_vencimento  | Data de vencimento da conta | DATE | --- | NOT NULL |
 | data_pagamento  | Data em que a conta foi paga | DATE | --- | --- |
 | status_pagamento | Situação atual do pagamento | VARCHAR | 10 | CHECK (status_pagamento IN ('PENDENTE', 'PAGO', 'VENCIDO', 'CANCELADO')) / DEFAULT 'PENDENTE' |
 | forma_pagamento | Forma de pagamento utilizada | VARCHAR | 20 | CHECK (forma_pagamento IN ('CARTAO','BOLETO','PIX','DINHEIRO')) |
-| transançao_id | ID da transação no gateway de pagamento | VARCHAR | 100 | --- |
+| transancao_id | ID da transação no gateway de pagamento | VARCHAR | 100 | --- |
 | os_id | Referência à Ordem de Serviço | INT | --- | FK para ORDEM_SERVICO(id) / NOT NULL |
