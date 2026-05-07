@@ -18,6 +18,8 @@ classDiagram
         -string endereco
         -string contato
         +solicitarOrdemServico(): void
+        +listarClientes() 
+        +listarClientesPorID
     }
     
     class CLIENTE_PF {
@@ -41,6 +43,8 @@ classDiagram
         -string horario_expediente
         -string status
         +registrarPonto(): void
+        +listarFuncionarios() 
+        +listarFuncionariosPorCargo
     }
     
     class TECNICO {
@@ -50,6 +54,7 @@ classDiagram
         -float comissao_percentual
         +executarServico(): void
         +calcularComissao(): float
+        +listarTecnicosPorEspecialidade
     }
     
     class ADMINISTRADOR {
@@ -71,6 +76,8 @@ classDiagram
         -int cliente_id
         +getHistoricoOS() List~OrdemServico~
         +atualizarObservacoes(texto: string): void
+        +listarAparelhosPorCliente(clienteId): List~Aparelho~
+        +listarAparelhosPorTipo(tipo): List~Aparelho~
     }
     
     class ORDEM_SERVICO {
@@ -88,6 +95,11 @@ classDiagram
         +adicionarServico(servico: SERVICO_EXECUTADO): void
         +removerServico(servico_id: int): bool        
         +imprimirRelatorio(): string
+        +listarOSPorCliente(clienteId): List~OrdemServico~
+        +listarOSPorFuncionario(funcionarioId): List~OrdemServico~
+        +listarOSPorClienteAparelho(clienteId, aparelhoId): List~OrdemServico~
+        +listarOSPorPeriodo(dataInicio, dataFim): List~OrdemServico~
+        +listarOSPorStatus(status): List~OrdemServico~
     }
     
     class SERVICO {
@@ -98,6 +110,7 @@ classDiagram
         -int tempo_estimado
         +aplicarDesconto(percentual: float): float
         +calcularTempoTotal(): int
+        +listarServicosPorCategoria(categoria): List~Servico~
     }
     
     class SERVICO_EXECUTADO {
@@ -125,6 +138,7 @@ classDiagram
         +diminuirEstoque(quantidade: int): void
         +verificarDisponibilidade(quantidade: int): bool
         +reporEstoque(quantidade: int): void
+        +listarServicosPorCategoria(categoria): List~Servico~
     }
     
     class EQUIPAMENTO_USADO {
@@ -147,6 +161,8 @@ classDiagram
         +registrarVisita(): void
         +reagendar(nova_data: date): void
         +cancelar(): void
+        +listarVisitasPorTecnico(tecnicoId): List~VisitaTecnica~
+        +listarVisitasPorPeriodo(dataInicio, dataFim): List~VisitaTecnica~
     }
     
     class CONTA_RECEBER {
@@ -167,6 +183,10 @@ classDiagram
         +gerarBoleto(): string
         +aplicarMulta(dias_atraso: int): void
         +validarPagamento(transacao_id: string): bool
+        +listarContasPorCliente(clienteId): List~ContaReceber~
+        +listarContasVencidas(): List~ContaReceber~
+        +listarContasAReceber(status): List~ContaReceber~
+        +pagarContaCliente(contaId, formaPagamento, valorPago): bool
     }
     
     %% Relacionamentos de Herança
