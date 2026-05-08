@@ -2,6 +2,7 @@
 
 ## 📊 Diagrama de Classes usando Mermaid
 
+```mermaid
 classDiagram
     %% Entidades Base
     class USUARIO {
@@ -12,6 +13,8 @@ classDiagram
         +autenticar(email, senha): bool
         +recuperarSenha(email): bool
         +logout(): void
+        +alterarSenha(novaSenha): bool
+        +alterarEmail(novoEmail): bool
     }
     
     class CLIENTE {
@@ -47,11 +50,12 @@ classDiagram
         -float salario
         -date data_admissao
         -string horario_expediente
-        -string status
+        -string status_funcionario
         +registrarPonto(): void
     }
     
     class TECNICO {
+        - int id
         -string especialidade
         -string certificacoes
         -int nivel_experiencia
@@ -66,6 +70,7 @@ classDiagram
     }
     
     class ADMINISTRADOR {
+        - int id
         -string cargo
         -string setor
         -float bonus_fixo
@@ -75,8 +80,7 @@ classDiagram
         +gerenciarServicos(): void
         +gerenciarEquipamentos(): void
         +registrarPagamentoOffline(contaId, formaPagamento): void
-        +cancelarConta(contaId): void
-        +renegociarConta(contaId, novaDataVencimento): void
+        +cancelarConta(contaId): void        
         +gerarRelatorioOS(filtros): Relatorio
         +agendarVisitaTecnica(osId, dataAgendamento): int
     }
@@ -130,7 +134,7 @@ classDiagram
         -int garantia_dias
         -float valor_cobrado
         -string observacoes
-        -int ordem_servico_id
+        -int os_id
         -int servico_id
         -int tecnico_id
         -datetime data_inicio
@@ -165,8 +169,8 @@ classDiagram
         -float horas_utilizadas
         -string observacoes
         -int servico_executado_id
-        -int equipamento_id
         -int quantidade
+        -int equipamento_id        
         +calcularCustoUso(): float
     }
     
@@ -215,6 +219,7 @@ classDiagram
         -string transacao_id
         -string status_transacao
         -string comprovante_url
+        -int conta_receber_id
         +processarPagamento(): bool
         +confirmarPagamento(): void
         +estornarPagamento(): bool
@@ -259,22 +264,24 @@ classDiagram
     FUNCIONARIO <|-- ADMINISTRADOR
     
     %% Relacionamentos de Associação
-    CLIENTE "1" --> "0..*" APARELHO : possui
-    CLIENTE "1" --> "0..*" ORDEM_SERVICO : "solicita"
-    CLIENTE "1" --> "0..*" CONTA_RECEBER : possui    
-    APARELHO "1" --> "0..*" ORDEM_SERVICO : "consertado_em"   
-    TECNICO "1" --> "0..*" ORDEM_SERVICO : "responsavel"
+    CLIENTE "1" -- "0..*" APARELHO : possui
+    CLIENTE "1" -- "0..*" ORDEM_SERVICO : solicita
+    CLIENTE "1" -- "0..*" CONTA_RECEBER : possui 
+    CLIENTE "1" -- "0..*" NOTIFICACAO : recebe   
+    APARELHO "1" -- "0..*" ORDEM_SERVICO : registrado_em    
+    TECNICO "1" -- "0..*" ORDEM_SERVICO : responsavel_por
     TECNICO "1" -- "0..*" SERVICO_EXECUTADO : executa
-    TECNICO "1" --> "0..*" VISITA_TECNICA : "realiza"   
-    ADMINISTRADOR "1" --> "0..*" AUDITORIA_LOG : registra    
-    ORDEM_SERVICO "1" --> "1" CONTA_RECEBER : "gera"
-    ORDEM_SERVICO "1" --> "0..*" VISITA_TECNICA : "gera"
-    ORDEM_SERVICO "1" --> "1..*" SERVICO_EXECUTADO : "contem"   
-    SERVICO "1" --> "0..*" SERVICO_EXECUTADO : "referenciado_em"    
-    SERVICO_EXECUTADO "1" --> "0..*" EQUIPAMENTO_USADO : utiliza    
-    EQUIPAMENTO "1" --> "0..*" EQUIPAMENTO_USADO : referenciado_em    
-    CONTA_RECEBER "1" --> "0..1" PAGAMENTO : gera    
-    USUARIO "1" --> "0..*" NOTIFICACAO : recebe
+    TECNICO "1" -- "0..*" VISITA_TECNICA : realiza    
+    ADMINISTRADOR "1" -- "0..*" AUDITORIA_LOG : registra 
+    ORDEM_SERVICO "1" -- "1" CONTA_RECEBER : gera
+    ORDEM_SERVICO "1" -- "0..*" VISITA_TECNICA : gera
+    ORDEM_SERVICO "1" -- "1..*" SERVICO_EXECUTADO : contem    
+    SERVICO "1" -- "0..*" SERVICO_EXECUTADO : executado_em    
+    SERVICO_EXECUTADO "1" -- "0..*" EQUIPAMENTO_USADO : utiliza    
+    EQUIPAMENTO "1" -- "0..*" EQUIPAMENTO_USADO : usado_em    
+    CONTA_RECEBER "1" -- "0..1" PAGAMENTO : gera    
+    USUARIO "1" -- "0..*" NOTIFICACAO : recebe
+    USUARIO "1" -- "0..*" AUDITORIA_LOG : gera
 
 ```
 
@@ -282,23 +289,24 @@ classDiagram
 
 Entidade                          |	Descrição   |
 ---------                         | ----------- |
-Usuário	   | Entidade base abstrata para representar informações gerais de acesso ao sistema: id, email, senha, status. Possui o método +autenticar(email, senha), +recuperarSenha(email), +logout() para validação de credenciais. |
-Cliente	   | Entidade que representa um cliente do sistema, estendendo USUARIO. Contém informações cadastrais: nome, endereco, contato. Possui o método +solicitarOrdemServico(), +visualizarMinhasContas(),+visualizarMinhasContas(), +visualizarMinhasOS(),+selecionarContasParaPagamento, +realizarPagamentoOnline,+obterComprovantePagamento. |
+Usuário	   | Entidade base abstrata para representar informações gerais de acesso ao sistema: id, email, senha, status. Possui o método +autenticar(email, senha), +recuperarSenha(email), +logout(),+alterarSenha(novaSenha),   +alterarEmail(novoEmail) para validação de credenciais. |
+Cliente	   | Entidade que representa um cliente do sistema, estendendo USUARIO. Contém informações cadastrais: nome, endereco, contato. Possui o método +solicitarOrdemServico(), +visualizarMinhasContas(), +visualizarMeusAparelhos(), +visualizarMinhasOS(),+selecionarContasParaPagamento(contasIds), +realizarPagamentoOnline(contasIds, formaPagamento, +obterComprovantePagamento(contaId). |
 Cliente CPF	| Especialização de CLIENTE para pessoa física. Adiciona os atributos cpf e data_nascimento. |
 Cliente CNPJ	| Especialização de CLIENTE para pessoa jurídica. Adiciona os atributos cnpj, razao_social e nome_fantasia. |
 Funcionário	 | Especialização de funcionário para técnico. Contém dados como nome, cpf, contato, salario, data_admissao, horario_expediente e status. Possui o método +registrarPonto() para controle de jornada. |
-Técnico | Especialização de FUNCIONARIO para técnicos especializados. Adiciona especialidade, certificacoes, nivel_experiencia e comissao_percentual. Possui os métodos +iniciarExecucaoServico, +pausarExecucaoServico(), +retomarExecucaoServico, +finalizarExecucaoServico, +registrarVisita, +atualizarStatusOS e +calcularComissao() para gestão de serviços e remuneração variável.|
-Administrador | Especialização de FUNCIONARIO para administradores do sistema. Adiciona cargo, setor e bonus_fixo. Possui o método +gerenciarFuncionarios(), +registrarPagamentoOffline, +cancelarConta, +renegociarConta, +gerarRelatorioOS,+agendarVisitaTecnica|
-Aparelho | Entidade que representa os equipamentos dos clientes que serão reparados. Contém informações técnicas: tipo, marca, modelo, numero_serie, cor, observacoes e cliente_id. Possui os métodos +getHistoricoOS() para consultar todas as ordens de serviço do aparelho e +atualizarObservacoes(), +atualizarObservacoes para manutenção do registro. |
-Ordem_Serviço | Entidade central que representa uma ordem de serviço aberta para reparo. Contém id, data_abertura, data_encerramento, descricao_problema, status, valor_total, cliente_id, tecnico_id e aparelho_id. Possui métodos para +calcularValorTotal(), +alterarStatus(), +adicionarServico(), +removerServico(), +adicionarEquipamentoUsado e +imprimirRelatorio(). |
-Serviço | Entidade que representa um tipo de serviço oferecido pela assistência (ex: limpeza, troca de tela, reparo de placa). Contém nome, descricao, valor_padrao, tempo_estimado e status. Possui métodos para +aplicarDesconto() e +calcularTempoTotal(). |
-Serviço_executado | Entidade associativa que registra a execução de um serviço específico em uma ordem de serviço. Contém garantia_dias,valor_cobrado (que pode ser diferente do valor padrão), observacoes, ordem_servico_id, servico_id, int tecnico_id, data_inicio, data_fim, tempo_gasto, status_execucao, comissao_calculada. Possui o método +calcularGarantia(), +calcularTempoGasto(),+calcularComissao() e +verificarGarantiaAtiva() para formalizar a realização do serviço. |
-Equipamento	| Entidade que representa insumos, ferramentas ou peças do estoque da assistência. Contém codigo, tipo, marca, modelo, quantidade, status, numero_serie, data_aquisicao e valor_compra. Possui métodos para +diminuirEstoque(), +verificarDisponibilidade() e +reporEstoque() para controle de inventário. |
+Técnico | Especialização de FUNCIONARIO para técnicos especializados. Adiciona especialidade, certificacoes, nivel_experiencia e comissao_percentual. Possui os métodos +iniciarExecucaoServico(servicoExecutadoId), +pausarExecucaoServico(servicoExecutadoId), +retomarExecucaoServico(servicoExecutadoId), +finalizarExecucaoServico(servicoExecutadoId), +registrarVisita(visitaId, resultado), +atualizarStatusOS(osId, novoStatus) e +calcularComissao() para gestão de serviços e remuneração variável.|
+Administrador | Especialização de FUNCIONARIO para administradores do sistema. Adiciona cargo, setor e bonus_fixo. Possui o método +gerenciarFuncionarios(), +gerenciarClientes(), +gerenciarAparelhos(), +gerenciarServicos(), +gerenciarEquipamentos(), +registrarPagamentoOffline(contaId, formaPagamento), +cancelarConta(contaId), +gerarRelatorioOS(filtros),+agendarVisitaTecnica(osId, dataAgendamento)|
+Aparelho | Entidade que representa os aparelhos dos clientes que serão reparados. Contém informações técnicas: tipo, marca, modelo, numero_serie, cor, observacoes e cliente_id e status. Possui os métodos +getHistoricoOS() para consultar todas as ordens de serviço do aparelho e +atualizarObservacoes() para manutenção do registro. |
+Ordem_Serviço | Entidade central que representa uma ordem de serviço aberta para reparo. Contém id, data_abertura, data_encerramento, descricao_problema, status, valor_total, cliente_id, tecnico_id e aparelho_id. Possui métodos para +calcularValorTotal(), +alterarStatus(novoStatus), +adicionarServico(servicoId, quantidade), +removerServico(servicoExecutadoId), +adicionarEquipamentoUsado(equipamentoId, quantidade) e +imprimirRelatorio(). |
+Serviço | Entidade que representa um tipo de serviço oferecido pela assistência (ex: limpeza, troca de tela, reparo de placa). Contém nome, descricao, valor_padrao, tempo_estimado e status. Possui métodos para +aplicarDesconto(percentual) e +calcularTempoTotal(). |
+Serviço_executado | Entidade associativa que registra a execução de um serviço específico em uma ordem de serviço. Contém garantia_dias,valor_cobrado (que pode ser diferente do valor padrão), observacoes, os_id, servico_id, tecnico_id, data_inicio, data_fim, tempo_gasto, status_execucao, comissao_calculada. Possui o método +calcularGarantia(), +calcularTempoGasto(),+calcularComissao() e +verificarGarantiaAtiva() para formalizar a realização do serviço. |
+Equipamento	| Entidade que representa insumos, ferramentas ou peças do estoque da assistência. Contém codigo, tipo, marca, modelo, quantidade_estoque, status, numero_serie, data_aquisicao e valor_compra. Possui métodos para +diminuirEstoque(), +verificarDisponibilidade() e +reporEstoque() para controle de inventário. |
 Equipamento_usado | Entidade associativa que registra quais equipamentos/peças foram consumidos ou utilizados em cada serviço executado. Contém horas_utilizadas, observacoes, servico_executado_id, equipamento_id e quantidade. Possui o método +calcularCustoUso() para apurar o custo dos insumos aplicados. |
-Visita Técnica | Entidade que representa visitas realizadas por técnicos na residência do cliente. Contém data_agendamento, data_realizacao, resultado, os_id e tecnico_id. Possui métodos para +registrarVisita(), +reagendar() e +cancelar() para gestão do atendimento externo. |
-Conta a Receber	| Entidade que representa as obrigações financeiras geradas pelas ordens de serviço. Contém valor_original, multa, juros, valor_total, data_emissao, data_vencimento, data_pagamento, status_pagamento, forma_pagamento, transacao_id, -string qr_code_pix, string boleto_codigo e os_id. Possui métodos para +calcularTotalComJuros(), +marcarComoPago(), +gerarQRCodePix(), +gerarBoleto(), +aplicarMulta() e +validarPagamento() para gestão financeira completa. |
-Pagamento | Representa o ato do pagamento em si (transação, comprovante, processamento). Uma CONTA_RECEBER pode gerar um PAGAMENTO. Contém valor_pago, data_pagamento, forma_pagamento, transacao_id, status_transacao, comprovante_url. Possui métodos para       +processarPagamento(), +confirmarPagamento(), +estornarPagamento(), +emitirComprovante().
-
+Visita_Técnica | Entidade que representa visitas realizadas por técnicos na residência do cliente. Contém data_agendamento, data_realizacao, resultado, os_id e tecnico_id e status. Possui métodos para +registrarVisita(), +reagendar() e +cancelar() para gestão do atendimento externo. |
+Conta_Receber	| Entidade que representa as obrigações financeiras geradas pelas ordens de serviço. Contém valor_original, multa, juros, valor_total, data_emissao, data_vencimento, data_pagamento, status_pagamento, forma_pagamento, transacao_id, -string qr_code_pix, string boleto_codigo e os_id. Possui métodos para +calcularTotalComJuros(), +marcarComoPago(), +gerarQRCodePix(), +gerarBoleto(), +aplicarMulta() e +validarPagamento() para gestão financeira completa. |
+Pagamento | Representa o ato do pagamento em si (transação, comprovante, processamento). Uma CONTA_RECEBER pode gerar um PAGAMENTO. Contém valor_pago, data_pagamento, forma_pagamento, transacao_id, status_transacao, comprovante_url. Possui métodos para       +processarPagamento(), +confirmarPagamento(), +estornarPagamento(), +emitirComprovante().|
+| Notificaçao | Entidade que representa as notificações enviadas pelo sistema aos usuários sobre eventos importantes. Contém usuario_id (destinatário), tipo (GARANTIA_EXPIRANDO, CONTA_VENCENDO, OS_ATUALIZADA, VISITA_AGENDADA, PAGAMENTO_CONFIRMADO), titulo, mensagem, data_envio, data_leitura, status (ENVIADO, LIDO, FALHOU) e link_referencia. Possui métodos para +enviar() (dispara a notificação) e +marcarComoLida() (registra leitura pelo usuário).|
+| Auditoria_log | Entidade que registra todas as ações dos usuários no sistema para fins de rastreabilidade, conformidade e segurança. Contém usuario_id (quem executou a ação), tabela_afetada (nome da tabela modificada), registro_id (ID do registro afetado), acao (INSERT, UPDATE, DELETE, STATUS_CHANGE), dados_antigos (JSON com estado anterior), dados_novos (JSON com novo estado), data_hora (timestamp da ação) e ip_origem (endereço IP da requisição). Possui métodos para +registrar() (insere o log automaticamente) e +consultarLogs(filtros) (permite consulta filtrada). Os logs são imutáveis e não podem ser alterados ou excluídos.|
 
 ---
 
@@ -306,10 +314,12 @@ Pagamento | Representa o ato do pagamento em si (transação, comprovante, proce
 
 ```mermaid
 erDiagram
+    %% Entidades Base
     USUARIO {
         int id PK
         string email
         string senha
+        string status
     }
     
     CLIENTE {
@@ -337,10 +347,10 @@ erDiagram
         string nome
         string cpf
         string contato
-        float salario        
+        float salario
         date data_admissao
         string horario_expediente
-        string status
+        string status_funcionario
     }
     
     TECNICO {
@@ -357,36 +367,39 @@ erDiagram
         string setor
         float bonus_fixo
     }
-
+    
+    %% Entidades de Negócio
     APARELHO {
         int id PK
         string tipo
         string marca
         string modelo
         string numero_serie
-        string cor        
+        string cor
         string observacoes
-        int cliente_id FK       
+        int cliente_id FK
+        string status
     }
     
-ORDEM_SERVICO {
+    ORDEM_SERVICO {
         int id PK
         date data_abertura
         date data_encerramento
         string descricao_problema
         string status
-        float valor_total        
+        float valor_total
         int cliente_id FK
         int tecnico_id FK
         int aparelho_id FK
     }
-
+    
     SERVICO {
         int id PK
         string nome
         string descricao
         float valor_padrao
         int tempo_estimado
+        string status
     }
     
     SERVICO_EXECUTADO {
@@ -394,13 +407,14 @@ ORDEM_SERVICO {
         int garantia_dias
         float valor_cobrado
         string observacoes
-        int ordem_servico_id FK
+        int os_id FK
         int servico_id FK
         int tecnico_id FK
-        date data_inicio
-        date data_fim	
-        tempo_gasto	
-        status_execucao	
+        datetime data_inicio
+        datetime data_fim
+        time tempo_gasto
+        string status_execucao
+        float comissao_calculada
     }
     
     EQUIPAMENTO {
@@ -409,31 +423,33 @@ ORDEM_SERVICO {
         string tipo
         string marca
         string modelo
-        int quantidade
+        int quantidade_estoque
         string status
         string numero_serie
         date data_aquisicao
         float valor_compra
     }
-
+    
     EQUIPAMENTO_USADO {
         int id PK
         float horas_utilizadas
         string observacoes
+        int quantidade
         int servico_executado_id FK
         int equipamento_id FK
-        int quantidade
     }
     
     VISITA_TECNICA {
         int id PK
-        date data_agendamento
-        date data_realizacao
+        datetime data_agendamento
+        datetime data_realizacao
         string resultado
         int os_id FK
         int tecnico_id FK
+        string status
     }
     
+    %% Entidades Financeiras
     CONTA_RECEBER {
         int id PK
         float valor_original
@@ -446,9 +462,47 @@ ORDEM_SERVICO {
         string status_pagamento
         string forma_pagamento
         string transacao_id
+        string qr_code_pix
+        string boleto_codigo
         int os_id FK
-    }    
-      
+    }
+    
+    PAGAMENTO {
+        int id PK
+        float valor_pago
+        datetime data_pagamento
+        string forma_pagamento
+        string transacao_id
+        string status_transacao
+        string comprovante_url
+        int conta_receber_id FK
+    }
+    
+    %% Entidades de Suporte
+    NOTIFICACAO {
+        int id PK
+        int usuario_id FK
+        string tipo
+        string titulo
+        string mensagem
+        datetime data_envio
+        datetime data_leitura
+        string status
+        string link_referencia
+    }
+    
+    AUDITORIA_LOG {
+        int id PK
+        int usuario_id FK
+        string tabela_afetada
+        int registro_id
+        string acao
+        json dados_antigos
+        json dados_novos
+        datetime data_hora
+        string ip_origem
+    }
+    
     %% Relacionamentos de Herança (Generalização/Especialização)
     USUARIO ||--|| CLIENTE : "é um"
     USUARIO ||--|| FUNCIONARIO : "é um"
@@ -456,19 +510,35 @@ ORDEM_SERVICO {
     CLIENTE ||--|| CLIENTE_PJ : "é um"
     FUNCIONARIO ||--|| TECNICO : "é um"
     FUNCIONARIO ||--|| ADMINISTRADOR : "é um"
-
+    
     %% Relacionamentos de Associação
     CLIENTE ||--o{ APARELHO : "possui"
     CLIENTE ||--o{ ORDEM_SERVICO : "solicita"
-    APARELHO ||--o{ ORDEM_SERVICO : "consertado_em"
+    CLIENTE ||--o{ CONTA_RECEBER : "possui"
+    CLIENTE ||--o{ NOTIFICACAO : "recebe"
+    
+    APARELHO ||--o{ ORDEM_SERVICO : "registrado_em"
+    
     TECNICO ||--o{ ORDEM_SERVICO : "responsavel_por"
+    TECNICO ||--o{ SERVICO_EXECUTADO : "executa"
     TECNICO ||--o{ VISITA_TECNICA : "realiza"
+    
+    ADMINISTRADOR ||--o{ AUDITORIA_LOG : "registra"
+    
     ORDEM_SERVICO ||--o{ VISITA_TECNICA : "gera"
     ORDEM_SERVICO ||--|| CONTA_RECEBER : "gera"
     ORDEM_SERVICO ||--o{ SERVICO_EXECUTADO : "contem"
-    SERVICO ||--o{ SERVICO_EXECUTADO : "referenciado_em"
+    
+    SERVICO ||--o{ SERVICO_EXECUTADO : "executado_em"
+    
     SERVICO_EXECUTADO ||--o{ EQUIPAMENTO_USADO : "utiliza"
-    EQUIPAMENTO ||--o{ EQUIPAMENTO_USADO : "referenciado_em"
+    
+    EQUIPAMENTO ||--o{ EQUIPAMENTO_USADO : "usado_em"
+    
+    CONTA_RECEBER ||--o{ PAGAMENTO : "gera"
+    
+    USUARIO ||--o{ NOTIFICACAO : "recebe"
+    USUARIO ||--o{ AUDITORIA_LOG : "gera"
 ```
 
 ### Dicionário de Dados
@@ -483,6 +553,7 @@ ORDEM_SERVICO {
 | id | Identificador único | SERIAL | --- | PK / Identity |
 | e-mail | e-mail para login  | VARCHAR | 150 | Unique / Not Null |
 | senha  | Senha criptografada | VARCHAR | 255 | Not Null |
+| status | Situação do usuário no sistema | VARCHAR | 20 | NOT NULL / DEFAULT 'ATIVO' / CHECK (status IN ('ATIVO', 'INATIVO', 'BLOQUEADO', 'PENDENTE_VERIFICACAO')) |
 
 ---
 
@@ -585,6 +656,7 @@ ORDEM_SERVICO {
 | cor | Cor do aparelho | VARCHAR |	30 | --- |
 | observacoes |	Observações adicionais sobre o aparelho | TEXT | --- | --- |
 | cliente_id | Referência ao cliente proprietário |	INT	| --- |	FK (CLIENTE.id) / NOT NULL |
+| status | Situação do aparelho | VARCHAR | 20 | DEFAULT 'ATIVO' / CHECK (status IN ('ATIVO', 'INATIVO')) |
 
 ---
 
@@ -619,6 +691,7 @@ ORDEM_SERVICO {
 | descricao | Descrição detalhada do serviço | TEXT	| --- |	--- |
 | valor_padrao | Valor padrão do serviço | DECIMAL(10,2) | --- | NOT NULL / CHECK (valor_padrao >= 0) |
 | tempo_estimado | Tempo estimado em minutos para execução | INT | --- | CHECK (tempo_estimado > 0) |
+| status | Situação do serviço no catálogo | VARCHAR | 20 | DEFAULT 'ATIVO' / CHECK (status IN ('ATIVO', 'INATIVO')) |
 
 ---
 
@@ -635,6 +708,12 @@ ORDEM_SERVICO {
 | observacoes |	Observações sobre a execução do serviço | TEXT| --- | --- |
 | ordem_servico_id | Referência à Ordem de Serviço | INT | --- | FK (ORDEM_SERVICO.id) / NOT NULL |
 | servico_id | Referência ao serviço executado | INT | --- | FK (SERVICO.id) / NOT NULL |
+| tecnico_id | Técnico que executou o serviço | INT | --- | FK (TECNICO.id) |
+| data_inicio | Data e hora de início da execução | DATETIME | --- | --- |
+| data_fim | Data e hora de término da execução | DATETIME | --- |---|
+| tempo_gasto | Tempo total gasto na execução | TIME | --- |---|
+| status_execucao | Status da execução do serviço | VARCHAR | 20 | DEFAULT 'PENDENTE' / CHECK (status_execucao IN ('PENDENTE', 'EM_EXECUCAO', 'PAUSADO', 'CONCLUIDO')) |
+| comissao_calculada | Valor da comissão gerada para o técnico | DECIMAL(10,2) | --- | DEFAULT 0.00 |
 
 ---
 
@@ -687,6 +766,7 @@ ORDEM_SERVICO {
 | resultado | Descrição do resultado da visita técnica | TEXT | --- | --- |
 | os_id | Referência à Ordem de Serviço | INT | --- | FK para ORDEM_SERVICO(id) / NOT NULL |
 | tecnico_id | Referência ao técnico responsável | INT | --- | FK para TECNICO(id)/ NOT NULL |
+| status | Situação da visita | VARCHAR | 20 | DEFAULT 'AGENDADA' / CHECK (status IN ('AGENDADA', 'REALIZADA', 'CANCELADA')) |
 
 ---
 
@@ -708,4 +788,64 @@ ORDEM_SERVICO {
 | status_pagamento | Situação atual do pagamento | VARCHAR | 10 | CHECK (status_pagamento IN ('PENDENTE', 'PAGO', 'VENCIDO', 'CANCELADO')) / DEFAULT 'PENDENTE' |
 | forma_pagamento | Forma de pagamento utilizada | VARCHAR | 20 | CHECK (forma_pagamento IN ('CARTAO','BOLETO','PIX','DINHEIRO')) |
 | transancao_id | ID da transação no gateway de pagamento | VARCHAR | 100 | --- |
+| qr_code_pix | QR Code PIX para pagamento | TEXT | --- | |
+| boleto_codigo | Código de barras do boleto | VARCHAR | 100 | |
 | os_id | Referência à Ordem de Serviço | INT | --- | FK para ORDEM_SERVICO(id) / NOT NULL |
+
+---
+
+|   Tabela   | PAGAMENTO |
+| ---------- | ----------- |
+| Descrição  | Registra cada transação de pagamento realizada, permitindo que uma única conta a receber tenha múltiplos pagamentos (parcelado). |
+| Observação | Um pagamento sempre está vinculado a uma CONTA_RECEBER. Uma conta pode ter vários pagamentos (ex: parcelado). |
+
+|  Nome         | Descrição                        | Tipo de Dado | Tamanho | Restrições de Domínio |
+| ------------- | -------------------------------- | ------------ | ------- | --------------------- |
+| id | Identificador único | SERIAL / INT | --- | PK / Identity |
+| valor_pago |  Valor efetivamente pago |	DECIMAL(10,2) |	---	| NOT NULL / CHECK (valor_pago > 0)|
+| data_pagamento |	Data e hora do pagamento |	DATETIME |	---	 | NOT NULL|
+| forma_pagamento |	Forma de pagamento utilizada |	VARCHAR	| 20 | NOT NULL / CHECK (forma_pagamento IN ('CARTAO', 'BOLETO', 'PIX', 'DINHEIRO', 'TRANSFERENCIA'))|
+| transacao_id | ID da transação no gateway | VARCHAR |	100	| --- |
+| status_transacao | Status da transação | VARCHAR | 20	| DEFAULT 'PENDENTE' / CHECK (status_transacao IN ('PENDENTE', 'CONFIRMADO', 'FALHOU', 'ESTORNADO'))|
+| comprovante_url |	URL do comprovante em PDF |	VARCHAR | 255 |	--- |
+| conta_receber_id | Referência à conta paga | INT |---| FK (CONTA_RECEBER.id) / NOT NULL|
+
+---
+
+|   Tabela   | NOTIFICACAO |
+| ---------- | ----------- |
+| Descrição  | Armazena notificações enviadas aos usuários sobre eventos importantes (garantia expirando, conta vencendo, OS atualizada, etc.) |
+| Observação | As notificações são geradas automaticamente pelo sistema com base em regras de negócio (ex: garantia próxima do vencimento). |
+
+| Nome | Descrição | Tipo de Dado | Tamanho | Restrições de Domínio |
+|------|-----------|-------------|---------|----------------------|
+| id | Identificador único da notificação | SERIAL/INT | --- | PK / Identity |
+| usuario_id | Usuário destinatário da notificação | INT | --- | FK (USUARIO.id) / NOT NULL |
+| tipo | Tipo da notificação | VARCHAR | 30 | NOT NULL / CHECK (tipo IN ('GARANTIA_EXPIRANDO', 'CONTA_VENCENDO', 'OS_ATUALIZADA', 'VISITA_AGENDADA', 'PAGAMENTO_CONFIRMADO')) |
+| titulo | Título da notificação | VARCHAR | 100 | NOT NULL |
+| mensagem | Mensagem da notificação | TEXT | --- | NOT NULL |
+| data_envio | Data e hora do envio | DATETIME | --- | DEFAULT CURRENT_TIMESTAMP |
+| data_leitura | Data e hora da leitura | DATETIME | --- |---|
+| status | Status da notificação | VARCHAR | 20 | DEFAULT 'ENVIADO' / CHECK (status IN ('ENVIADO', 'LIDO', 'FALHOU')) |
+| link_referencia | Link para página relacionada | VARCHAR | 255 | --- |
+
+---
+
+|   Tabela   | AUDITORIA_LOG |
+| ---------- | ----------- |
+| Descrição  | Registra todas as ações de usuários no sistema para fins de auditoria, rastreabilidade e conformidade. |
+| Observação | Os logs são imutáveis (não podem ser alterados ou excluídos) e servem para identificar responsabilidades em caso de inconsistências. |
+
+| Nome | Descrição | Tipo de Dado | Tamanho | Restrições de Domínio |
+|------|-----------|-------------|---------|----------------------|
+| id | Identificador único do log | SERIAL/INT | --- | PK / Identity |
+| usuario_id | Usuário que realizou a ação | INT | --- | FK (USUARIO.id) / NOT NULL |
+| tabela_afetada | Nome da tabela alterada | VARCHAR | 50 | NOT NULL |
+| registro_id | ID do registro afetado | INT | --- | NOT NULL |
+| acao | Tipo de ação realizada | VARCHAR | 20 | NOT NULL / CHECK (acao IN ('INSERT', 'UPDATE', 'DELETE', 'STATUS_CHANGE')) |
+| dados_antigos | Dados antes da alteração (formato JSON) | JSON | --- |---|
+| dados_novos | Dados depois da alteração (formato JSON) | JSON | --- |---|
+| data_hora | Data e hora da ação | DATETIME | --- | DEFAULT CURRENT_TIMESTAMP |
+| ip_origem | IP de origem da requisição | VARCHAR | 45 | NOT NULL |
+
+---
