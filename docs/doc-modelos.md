@@ -279,7 +279,7 @@ classDiagram
     SERVICO "1" -- "0..*" SERVICO_EXECUTADO : executado_em    
     SERVICO_EXECUTADO "1" -- "0..*" EQUIPAMENTO_USADO : utiliza    
     EQUIPAMENTO "1" -- "0..*" EQUIPAMENTO_USADO : usado_em    
-    CONTA_RECEBER "1" -- "0..1" PAGAMENTO : gera    
+    CONTA_RECEBER "1" -- "0..1" PAGAMENTO : tem    
     USUARIO "1" -- "0..*" NOTIFICACAO : recebe
     USUARIO "1" -- "0..*" AUDITORIA_LOG : gera
 
@@ -535,7 +535,7 @@ erDiagram
     
     EQUIPAMENTO ||--o{ EQUIPAMENTO_USADO : "usado_em"
     
-    CONTA_RECEBER ||--o{ PAGAMENTO : "gera"
+    CONTA_RECEBER ||--o{ PAGAMENTO : "tem"
     
     USUARIO ||--o{ NOTIFICACAO : "recebe"
     USUARIO ||--o{ AUDITORIA_LOG : "gera"
