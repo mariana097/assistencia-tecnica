@@ -2,14 +2,16 @@
 
 ## 📊 Diagrama de Classes usando Mermaid
 
-
-```mermaid
 classDiagram
+    %% Entidades Base
     class USUARIO {
         -int id
         -string email
         -string senha
-        +autenticar(email: string, senha: string): bool
+        -string status
+        +autenticar(email, senha): bool
+        +recuperarSenha(email): bool
+        +logout(): void
     }
     
     class CLIENTE {
@@ -17,9 +19,13 @@ classDiagram
         -string nome
         -string endereco
         -string contato
-        +solicitarOrdemServico(): void
-        +listarClientes() 
-        +listarClientesPorID
+        +solicitarOrdemServico(): int
+        +visualizarMinhasContas(): List~ContaReceber~
+        +visualizarMeusAparelhos(): List~Aparelho~
+        +visualizarMinhasOS(): List~OrdemServico~
+        +selecionarContasParaPagamento(contasIds): float
+        +realizarPagamentoOnline(contasIds, formaPagamento): bool
+        +obterComprovantePagamento(contaId): PDF
     }
     
     class CLIENTE_PF {
@@ -43,8 +49,6 @@ classDiagram
         -string horario_expediente
         -string status
         +registrarPonto(): void
-        +listarFuncionarios() 
-        +listarFuncionariosPorCargo
     }
     
     class TECNICO {
@@ -52,9 +56,13 @@ classDiagram
         -string certificacoes
         -int nivel_experiencia
         -float comissao_percentual
-        +executarServico(): void
+        +iniciarExecucaoServico(servicoExecutadoId): void
+        +pausarExecucaoServico(servicoExecutadoId): void
+        +retomarExecucaoServico(servicoExecutadoId): void
+        +finalizarExecucaoServico(servicoExecutadoId): void
         +calcularComissao(): float
-        +listarTecnicosPorEspecialidade
+        +registrarVisita(visitaId, resultado): void
+        +atualizarStatusOS(osId, novoStatus): void
     }
     
     class ADMINISTRADOR {
@@ -62,8 +70,18 @@ classDiagram
         -string setor
         -float bonus_fixo
         +gerenciarFuncionarios(): void
+        +gerenciarClientes(): void
+        +gerenciarAparelhos(): void
+        +gerenciarServicos(): void
+        +gerenciarEquipamentos(): void
+        +registrarPagamentoOffline(contaId, formaPagamento): void
+        +cancelarConta(contaId): void
+        +renegociarConta(contaId, novaDataVencimento): void
+        +gerarRelatorioOS(filtros): Relatorio
+        +agendarVisitaTecnica(osId, dataAgendamento): int
     }
     
+    %% Entidades de Negócio
     class APARELHO {
         -int id
         -string tipo
@@ -73,10 +91,9 @@ classDiagram
         -string cor
         -string observacoes
         -int cliente_id
-        +getHistoricoOS() List~OrdemServico~
-        +atualizarObservacoes(texto: string): void
-        +listarAparelhosPorCliente(clienteId): List~Aparelho~
-        +listarAparelhosPorTipo(tipo): List~Aparelho~
+        -string status
+        +getHistoricoOS(): List~OrdemServico~
+        +atualizarObservacoes(texto): void
     }
     
     class ORDEM_SERVICO {
@@ -85,20 +102,16 @@ classDiagram
         -date data_encerramento
         -string descricao_problema
         -string status
-        -float valor_total        
+        -float valor_total
         -int cliente_id
         -int tecnico_id
         -int aparelho_id
         +calcularValorTotal(): float
-        +alterarStatus(novoStatus: string): void
-        +adicionarServico(servico: SERVICO_EXECUTADO): void
-        +removerServico(servico_id: int): bool        
-        +imprimirRelatorio(): string
-        +listarOSPorCliente(clienteId): List~OrdemServico~
-        +listarOSPorFuncionario(funcionarioId): List~OrdemServico~
-        +listarOSPorClienteAparelho(clienteId, aparelhoId): List~OrdemServico~
-        +listarOSPorPeriodo(dataInicio, dataFim): List~OrdemServico~
-        +listarOSPorStatus(status): List~OrdemServico~
+        +alterarStatus(novoStatus): void
+        +adicionarServico(servicoId, quantidade): void
+        +removerServico(servicoExecutadoId): bool
+        +adicionarEquipamentoUsado(equipamentoId, quantidade): void
+        +imprimirRelatorio(): PDF
     }
     
     class SERVICO {
@@ -107,9 +120,9 @@ classDiagram
         -string descricao
         -float valor_padrao
         -int tempo_estimado
-        +aplicarDesconto(percentual: float): float
+        -string status
+        +aplicarDesconto(percentual): float
         +calcularTempoTotal(): int
-        +listarServicosPorCategoria(categoria): List~Servico~
     }
     
     class SERVICO_EXECUTADO {
@@ -119,8 +132,16 @@ classDiagram
         -string observacoes
         -int ordem_servico_id
         -int servico_id
-        +registrarExecucao(): void
+        -int tecnico_id
+        -datetime data_inicio
+        -datetime data_fim
+        -time tempo_gasto
+        -string status_execucao
+        -float comissao_calculada
         +calcularGarantia(): date
+        +calcularTempoGasto(): time
+        +calcularComissao(): float
+        +verificarGarantiaAtiva(): bool
     }
     
     class EQUIPAMENTO {
@@ -129,15 +150,14 @@ classDiagram
         -string tipo
         -string marca
         -string modelo
-        -int quantidade
+        -int quantidade_estoque
         -string status
         -string numero_serie
         -date data_aquisicao
         -float valor_compra
-        +diminuirEstoque(quantidade: int): void
-        +verificarDisponibilidade(quantidade: int): bool
-        +reporEstoque(quantidade: int): void
-        +listarServicosPorCategoria(categoria): List~Servico~
+        +diminuirEstoque(quantidade): bool
+        +verificarDisponibilidade(quantidade): bool
+        +reporEstoque(quantidade): void
     }
     
     class EQUIPAMENTO_USADO {
@@ -152,18 +172,18 @@ classDiagram
     
     class VISITA_TECNICA {
         -int id
-        -date data_agendamento
-        -date data_realizacao
+        -datetime data_agendamento
+        -datetime data_realizacao
         -string resultado
         -int os_id
         -int tecnico_id
+        -string status
         +registrarVisita(): void
-        +reagendar(nova_data: date): void
+        +reagendar(novaData): void
         +cancelar(): void
-        +listarVisitasPorTecnico(tecnicoId): List~VisitaTecnica~
-        +listarVisitasPorPeriodo(dataInicio, dataFim): List~VisitaTecnica~
     }
     
+    %% Entidades Financeiras
     class CONTA_RECEBER {
         -int id
         -float valor_original
@@ -176,38 +196,86 @@ classDiagram
         -string status_pagamento
         -string forma_pagamento
         -string transacao_id
+        -string qr_code_pix
+        -string boleto_codigo
         -int os_id
         +calcularTotalComJuros(): float
-        +marcarComoPago(dataPagamento: date): void
+        +marcarComoPago(dataPagamento): void
         +gerarBoleto(): string
-        +aplicarMulta(dias_atraso: int): void
-        +validarPagamento(transacao_id: string): bool
-        +listarContasPorCliente(clienteId): List~ContaReceber~
-        +listarContasVencidas(): List~ContaReceber~
-        +listarContasAReceber(status): List~ContaReceber~
-        +pagarContaCliente(contaId, formaPagamento, valorPago): bool
+        +gerarQRCodePix(): string
+        +aplicarMulta(dias_atraso): void
+        +validarPagamento(transacao_id): bool
+    }
+    
+    class PAGAMENTO {
+        -int id
+        -float valor_pago
+        -date data_pagamento
+        -string forma_pagamento
+        -string transacao_id
+        -string status_transacao
+        -string comprovante_url
+        +processarPagamento(): bool
+        +confirmarPagamento(): void
+        +estornarPagamento(): bool
+        +emitirComprovante(): PDF
+    }
+    
+    %% Entidades de Suporte
+    class NOTIFICACAO {
+        -int id
+        -int usuario_id
+        -string tipo
+        -string titulo
+        -string mensagem
+        -datetime data_envio
+        -datetime data_leitura
+        -string status
+        -string link_referencia
+        +enviar(): void
+        +marcarComoLida(): void
+    }
+    
+    class AUDITORIA_LOG {
+        -int id
+        -int usuario_id
+        -string tabela_afetada
+        -int registro_id
+        -string acao
+        -json dados_antigos
+        -json dados_novos
+        -datetime data_hora
+        -string ip_origem
+        +registrar(): void
+        +consultarLogs(filtros): List
     }
     
     %% Relacionamentos de Herança
-    CLIENTE <|-- CLIENTE_PF : "extends"
-    CLIENTE <|-- CLIENTE_PJ : "extends"
-    USUARIO <|-- CLIENTE : "extends"
-    USUARIO <|-- FUNCIONARIO : "extends"
-    FUNCIONARIO <|-- TECNICO : "extends"
-    FUNCIONARIO <|-- ADMINISTRADOR : "extends"
+    USUARIO <|-- CLIENTE
+    USUARIO <|-- FUNCIONARIO
+    CLIENTE <|-- CLIENTE_PF
+    CLIENTE <|-- CLIENTE_PJ
+    FUNCIONARIO <|-- TECNICO
+    FUNCIONARIO <|-- ADMINISTRADOR
     
-    %% Associações
+    %% Relacionamentos de Associação
+    CLIENTE "1" --> "0..*" APARELHO : possui
     CLIENTE "1" --> "0..*" ORDEM_SERVICO : "solicita"
-    CLIENTE "1" --> "0..*" APARELHO : "possui"
-    APARELHO "1" --> "0..*" ORDEM_SERVICO : "consertado_em"
+    CLIENTE "1" --> "0..*" CONTA_RECEBER : possui    
+    APARELHO "1" --> "0..*" ORDEM_SERVICO : "consertado_em"   
     TECNICO "1" --> "0..*" ORDEM_SERVICO : "responsavel"
-    TECNICO "1" --> "0..*" VISITA_TECNICA : "realiza"
-    ORDEM_SERVICO "1" --> "0..*" VISITA_TECNICA : "gera"
+    TECNICO "1" -- "0..*" SERVICO_EXECUTADO : executa
+    TECNICO "1" --> "0..*" VISITA_TECNICA : "realiza"   
+    ADMINISTRADOR "1" --> "0..*" AUDITORIA_LOG : registra    
     ORDEM_SERVICO "1" --> "1" CONTA_RECEBER : "gera"
-    ORDEM_SERVICO "1" --> "1..*" SERVICO_EXECUTADO : "contem"
-    SERVICO "1" --> "0..*" SERVICO_EXECUTADO : "referenciado_em"
-    SERVICO_EXECUTADO "1" --> "0..*" EQUIPAMENTO_USADO : "utiliza"
-    EQUIPAMENTO "1" --> "0..*" EQUIPAMENTO_USADO : "referenciado_em"
+    ORDEM_SERVICO "1" --> "0..*" VISITA_TECNICA : "gera"
+    ORDEM_SERVICO "1" --> "1..*" SERVICO_EXECUTADO : "contem"   
+    SERVICO "1" --> "0..*" SERVICO_EXECUTADO : "referenciado_em"    
+    SERVICO_EXECUTADO "1" --> "0..*" EQUIPAMENTO_USADO : utiliza    
+    EQUIPAMENTO "1" --> "0..*" EQUIPAMENTO_USADO : referenciado_em    
+    CONTA_RECEBER "1" --> "0..1" PAGAMENTO : gera    
+    USUARIO "1" --> "0..*" NOTIFICACAO : recebe
+
 ```
 
 ### Descrição das Entidades
@@ -326,6 +394,11 @@ ORDEM_SERVICO {
         string observacoes
         int ordem_servico_id FK
         int servico_id FK
+        int tecnico_id FK
+        date data_inicio
+        date data_fim	
+        tempo_gasto	
+        status_execucao	
     }
     
     EQUIPAMENTO {
