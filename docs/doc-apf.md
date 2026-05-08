@@ -357,4 +357,3 @@ Cd = 362 PF
 
 ---
 
-*Documento baseado no modelo BSI - Doc 005 - Contagem de Pontos de Função*
