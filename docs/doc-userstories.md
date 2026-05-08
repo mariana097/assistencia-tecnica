@@ -15,7 +15,7 @@
 | US10 |Gerenciar Conta_Receber | Gerencia automaticamente as contas a receber com valor_total da OS, data_emissão atual e data_vencimento calculada e permite registrar pagamentos (offline e online), incluindo marcar conta como paga. | RF10 | Mariana |
 | US11 | Gerenciar Pagamento | Registra cada transação de pagamento realizada, permitindo que uma única conta a receber tenha múltiplos pagamentos (parcelado).| RF11 | Jadson |
 | US12 | Gerar Relatório | Permite gerar um relatório de ordens de serviço filtrado por período de abertura, status e técnico responsável, com opção de exportação.| RF12 | Mariana |
-| US13 | Controle de Garantia | Permite consultar e controlar o período de garantia das ordens de serviço finalizadas, com alerta para garantias próximas do vencimento ou já expiradas.| RF11| Jadson |
+| US13 | Controle de Garantia | Permite consultar e controlar o período de garantia das ordens de serviço finalizadas, com alerta para garantias próximas do vencimento ou já expiradas.| RF13| Jadson |
 ---
 # Documento Lista de User Stories
 
@@ -360,6 +360,9 @@ Permite registrar pagamentos online (cliente) e offline (administrador), incluin
 - Conta vencida pode ser paga com multa
 - Marcar conta como paga (status PAGO com data_pagamento atual)
 - Conta com status PAGO não pode ser alterada novamente
+- Uma conta pode ser paga em múltiplas parcelas, gerando registros de pagamento distintos
+- Sistema controla o saldo devedor da conta a receber
+- Quando o somatório dos pagamentos igualar o valor_total, a conta é marcada como PAGA
 
 ---
 
