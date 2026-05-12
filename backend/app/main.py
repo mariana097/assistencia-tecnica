@@ -12,25 +12,39 @@ app = FastAPI(
     redoc_url="/redoc"
 )
 
-# Configuração CORS
+# =========================
+# CORS
+# =========================
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["*"]
 )
 
-# Registrar routers
+# =========================
+# ROUTERS
+# =========================
 app.include_router(auth_router)
 app.include_router(usuario_router)
 app.include_router(funcionario_router)
-app.include_router(api_router)  # Este tem prefixo /api
+app.include_router(api_router)
 
+# =========================
+# ENDPOINTS
+# =========================
 @app.get("/")
 def root():
-    return {"message": "Bem-vindo ao Sistema de Gestão de Assistência Técnica"}
+    return {
+        "message": "Bem-vindo ao Sistema de Gestão de Assistência Técnica"
+    }
+
 
 @app.get("/health")
 def health():
-    return {"status": "ok", "message": "API está funcionando!"}
+    return {
+        "status": "ok",
+        "message": "API está funcionando!"
+    }

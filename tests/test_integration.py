@@ -1,5 +1,6 @@
 import pytest
 
+
 class TestIntegration:
     """Testes de integração do sistema"""
 
@@ -7,7 +8,7 @@ class TestIntegration:
         """Testa endpoint de saúde"""
         response = client.get("/health")
         assert response.status_code == 200
-        # Aceita resposta com ou sem message
+
         data = response.json()
         assert data.get("status") == "ok"
 
@@ -24,5 +25,13 @@ class TestIntegration:
 
     def test_cors_headers(self, client):
         """Testa se os headers CORS estão configurados"""
-        response = client.get("/")
+        origin = "http://localhost:3000"
+
+        response = client.get(
+            "/",
+            headers={"Origin": origin}
+        )
+
+        assert response.status_code == 200
         assert "access-control-allow-origin" in response.headers
+        assert response.headers["access-control-allow-origin"] == origin
