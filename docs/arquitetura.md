@@ -22,6 +22,7 @@ flowchart LR
     subgraph Banco
         DB[(SQLite)]
     end
+```
 ---
 
 # Documento de Projeto Arquitetural do Software
@@ -110,6 +111,7 @@ flowchart TB
 
     CLIENTE -- "🌐 HTTP / POST / GET / PUT" --> BACKEND
     BACKEND --> DATABASE
+```
 ---
 
 # Descrição dos Componentes
