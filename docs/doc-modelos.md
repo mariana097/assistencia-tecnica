@@ -18,7 +18,6 @@ classDiagram
     }
     
     class CLIENTE {
-        -int id
         -string nome
         -string endereco
         -string contato
@@ -43,7 +42,6 @@ classDiagram
     }
     
     class FUNCIONARIO {
-        -int id
         -string nome
         -string cpf
         -string contato
@@ -55,7 +53,6 @@ classDiagram
     }
     
     class TECNICO {
-        - int id
         -string especialidade
         -string certificacoes
         -int nivel_experiencia
@@ -70,7 +67,6 @@ classDiagram
     }
     
     class ADMINISTRADOR {
-        - int id
         -string cargo
         -string setor
         -float bonus_fixo
@@ -138,8 +134,10 @@ classDiagram
         -int servico_id
         -int tecnico_id
         -datetime data_inicio
+        -int minutos_pausa
         -datetime data_fim
         -time tempo_gasto
+        -date data_fim_garantia
         -string status_execucao
         -float comissao_calculada
         +calcularGarantia(): date
@@ -190,6 +188,7 @@ classDiagram
     %% Entidades Financeiras
     class CONTA_RECEBER {
         -int id
+        -int cliente_id 
         -float valor_original
         -float multa
         -float juros
@@ -266,20 +265,18 @@ classDiagram
     %% Relacionamentos de Associação
     CLIENTE "1" -- "0..*" APARELHO : possui
     CLIENTE "1" -- "0..*" ORDEM_SERVICO : solicita
-    CLIENTE "1" -- "0..*" CONTA_RECEBER : possui 
-    CLIENTE "1" -- "0..*" NOTIFICACAO : recebe   
+    CLIENTE "1" -- "0..*" CONTA_RECEBER : possui     
     APARELHO "1" -- "0..*" ORDEM_SERVICO : registrado_em    
     TECNICO "1" -- "0..*" ORDEM_SERVICO : responsavel_por
     TECNICO "1" -- "0..*" SERVICO_EXECUTADO : executa
-    TECNICO "1" -- "0..*" VISITA_TECNICA : realiza    
-    ADMINISTRADOR "1" -- "0..*" AUDITORIA_LOG : registra 
+    TECNICO "1" -- "0..*" VISITA_TECNICA : realiza  
     ORDEM_SERVICO "1" -- "1" CONTA_RECEBER : gera
     ORDEM_SERVICO "1" -- "0..*" VISITA_TECNICA : gera
     ORDEM_SERVICO "1" -- "1..*" SERVICO_EXECUTADO : contem    
     SERVICO "1" -- "0..*" SERVICO_EXECUTADO : executado_em    
     SERVICO_EXECUTADO "1" -- "0..*" EQUIPAMENTO_USADO : utiliza    
     EQUIPAMENTO "1" -- "0..*" EQUIPAMENTO_USADO : usado_em    
-    CONTA_RECEBER "1" -- "0..1" PAGAMENTO : tem    
+    CONTA_RECEBER "1" -- "0..*" PAGAMENTO : possui    
     USUARIO "1" -- "0..*" NOTIFICACAO : recebe
     USUARIO "1" -- "0..*" AUDITORIA_LOG : gera
 
@@ -411,8 +408,10 @@ erDiagram
         int servico_id FK
         int tecnico_id FK
         datetime data_inicio
+        int minutos_pausa
         datetime data_fim
         time tempo_gasto
+        date data_fim_garantia
         string status_execucao
         float comissao_calculada
     }
@@ -452,6 +451,7 @@ erDiagram
     %% Entidades Financeiras
     CONTA_RECEBER {
         int id PK
+        int cliente_id FK
         float valor_original
         float multa
         float juros
@@ -509,34 +509,22 @@ erDiagram
     CLIENTE ||--|| CLIENTE_PF : "é um"
     CLIENTE ||--|| CLIENTE_PJ : "é um"
     FUNCIONARIO ||--|| TECNICO : "é um"
-    FUNCIONARIO ||--|| ADMINISTRADOR : "é um"
-    
+    FUNCIONARIO ||--|| ADMINISTRADOR : "é um"    
     %% Relacionamentos de Associação
     CLIENTE ||--o{ APARELHO : "possui"
     CLIENTE ||--o{ ORDEM_SERVICO : "solicita"
-    CLIENTE ||--o{ CONTA_RECEBER : "possui"
-    CLIENTE ||--o{ NOTIFICACAO : "recebe"
-    
-    APARELHO ||--o{ ORDEM_SERVICO : "registrado_em"
-    
+    CLIENTE ||--o{ CONTA_RECEBER : "possui"       
+    APARELHO ||--o{ ORDEM_SERVICO : "registrado_em"    
     TECNICO ||--o{ ORDEM_SERVICO : "responsavel_por"
     TECNICO ||--o{ SERVICO_EXECUTADO : "executa"
-    TECNICO ||--o{ VISITA_TECNICA : "realiza"
-    
-    ADMINISTRADOR ||--o{ AUDITORIA_LOG : "registra"
-    
+    TECNICO ||--o{ VISITA_TECNICA : "realiza"         
     ORDEM_SERVICO ||--o{ VISITA_TECNICA : "gera"
     ORDEM_SERVICO ||--|| CONTA_RECEBER : "gera"
-    ORDEM_SERVICO ||--o{ SERVICO_EXECUTADO : "contem"
-    
-    SERVICO ||--o{ SERVICO_EXECUTADO : "executado_em"
-    
-    SERVICO_EXECUTADO ||--o{ EQUIPAMENTO_USADO : "utiliza"
-    
-    EQUIPAMENTO ||--o{ EQUIPAMENTO_USADO : "usado_em"
-    
-    CONTA_RECEBER ||--o{ PAGAMENTO : "tem"
-    
+    ORDEM_SERVICO ||--o{ SERVICO_EXECUTADO : "contem"    
+    SERVICO ||--o{ SERVICO_EXECUTADO : "executado_em"    
+    SERVICO_EXECUTADO ||--o{ EQUIPAMENTO_USADO : "utiliza"    
+    EQUIPAMENTO ||--o{ EQUIPAMENTO_USADO : "usado_em"    
+    CONTA_RECEBER ||--o{ PAGAMENTO : "tem"    
     USUARIO ||--o{ NOTIFICACAO : "recebe"
     USUARIO ||--o{ AUDITORIA_LOG : "gera"
 ```
@@ -564,7 +552,6 @@ erDiagram
 
 |  Nome         | Descrição                        | Tipo de Dado | Tamanho | Restrições de Domínio |
 | ------------- | -------------------------------- | ------------ | ------- | --------------------- |
-| id | Identificador único(FK para USUARIO) | INT | --- | PK / FK (USUARIO.id) |
 | nome | Nome completo do cliente (PF) ou razão social (PJ) | VARCHAR | 150 | Not Null |
 | endereco  | Endereço completo do cliente | VARCHAR | 200 | --- |
 | contato | Telefone para contato | VARCHAR | 20 | --- |
@@ -577,7 +564,6 @@ erDiagram
 
 |  Nome         | Descrição                        | Tipo de Dado | Tamanho | Restrições de Domínio |
 | ------------- | -------------------------------- | ------------ | ------- | --------------------- |
-| id | Identificador único(FK para CLIENTE) | INT | --- | PK / FK |
 | cpf | Cadastro de Pessoa Física | VARCHAR | 14 | Unique / Not Null |
 | data_nascimento  | Data de nascimento do cliente | DATE | --- | Not Null |
 
@@ -589,7 +575,6 @@ erDiagram
 
 |  Nome         | Descrição                        | Tipo de Dado | Tamanho | Restrições de Domínio |
 | ------------- | -------------------------------- | ------------ | ------- | --------------------- |
-| id | Identificador único(FK para CLIENTE) | INT | --- | PK / FK |
 | cnpj | Cadastro Nacional da Pessoa Jurídica | VARCHAR | 18 | Unique / Not Null |
 | razao_social  | Razão social da empresa | VARCHAR | 150 | Not Null |
 | nome_fantasia | Nome fantasia da empresa | VARCHAR | 100 | --- |
@@ -603,7 +588,6 @@ erDiagram
 
 |  Nome         | Descrição                        | Tipo de Dado | Tamanho | Restrições de Domínio |
 | ------------- | -------------------------------- | ------------ | ------- | --------------------- |
-| id | Identificador único(FK para USUARIO) | INT | --- | PK / FK (USUARIO.id) |
 | nome | Nome completo do Funcionário  | VARCHAR | 150 | Not Null |
 | cpf |	Cadastro de Pessoa Física |	VARCHAR | 14 | Unique / Not Null |
 | contato | Telefone para contato | VARCHAR | 20 | --- |
@@ -620,7 +604,6 @@ erDiagram
 
 |  Nome         | Descrição                        | Tipo de Dado | Tamanho | Restrições de Domínio |
 | ------------- | -------------------------------- | ------------ | ------- | --------------------- |
-| id | Identificador único(FK para FUNCIONARIO) | INT | --- | PK / FK |
 | especialidade | Área de atuação principal | VARCHAR | 100 | Not Null |
 | certificacoes  | Certificações técnicas (formato JSON ou texto) | TEXT| --- | --- |
 | nivel_experiencia | Nível hierárquico (1-5) | INT | --- | CHECK (nivel_experiencia BETWEEN 1 AND 5) |
@@ -710,8 +693,10 @@ erDiagram
 | servico_id | Referência ao serviço executado | INT | --- | FK (SERVICO.id) / NOT NULL |
 | tecnico_id | Técnico que executou o serviço | INT | --- | FK (TECNICO.id) |
 | data_inicio | Data e hora de início da execução | DATETIME | --- | --- |
+| minutos_pausa | Quantidade total de minutos em que a execução do serviço permaneceu pausada | INT | --- | DEFAULT 0 / CHECK (minutos_pausa >= 0) |
 | data_fim | Data e hora de término da execução | DATETIME | --- |---|
 | tempo_gasto | Tempo total gasto na execução | TIME | --- |---|
+| data_fim_garantia | Data de término da garantia do serviço executado | DATE | --- | Calculada a partir de data_fim + garantia_dias |
 | status_execucao | Status da execução do serviço | VARCHAR | 20 | DEFAULT 'PENDENTE' / CHECK (status_execucao IN ('PENDENTE', 'EM_EXECUCAO', 'PAUSADO', 'CONCLUIDO')) |
 | comissao_calculada | Valor da comissão gerada para o técnico | DECIMAL(10,2) | --- | DEFAULT 0.00 |
 
