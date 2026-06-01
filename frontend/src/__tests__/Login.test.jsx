@@ -3,17 +3,12 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import Login from '../components/Login'
 
-// Mock da API
-const mockLogin = vi.fn()
-vi.mock('../services/api', () => ({
-  login: (...args) => mockLogin(...args)
-}))
-
 describe('Login Component', () => {
   const mockOnLoginSuccess = vi.fn()
 
   beforeEach(() => {
     vi.clearAllMocks()
+    global.fetch = vi.fn()
   })
 
   it('deve renderizar o formulário de login', () => {
@@ -29,7 +24,10 @@ describe('Login Component', () => {
       token: 'fake-token',
       user: { id: 1, nome: 'Teste', email: 'teste@email.com' }
     }
-    mockLogin.mockResolvedValue(mockResponse)
+    global.fetch.mockResolvedValue({
+      ok: true,
+      json: async () => mockResponse
+    })
 
     render(<Login onLoginSuccess={mockOnLoginSuccess} />)
     
@@ -42,13 +40,23 @@ describe('Login Component', () => {
     fireEvent.click(submitButton)
     
     await waitFor(() => {
-      expect(mockLogin).toHaveBeenCalledWith('teste@email.com', 'senha123')
+      expect(global.fetch).toHaveBeenCalledWith(
+        'http://localhost:8000/auth/login',
+        expect.objectContaining({
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: 'teste@email.com', senha: 'senha123' })
+        })
+      )
       expect(mockOnLoginSuccess).toHaveBeenCalledWith(mockResponse.user)
     })
   })
 
   it('deve exibir erro quando credenciais são inválidas', async () => {
-    mockLogin.mockRejectedValue(new Error('Credenciais inválidas'))
+    global.fetch.mockResolvedValue({
+      ok: false,
+      json: async () => ({ detail: 'Credenciais inválidas' })
+    })
 
     render(<Login onLoginSuccess={mockOnLoginSuccess} />)
     

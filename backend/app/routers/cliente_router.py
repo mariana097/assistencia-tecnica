@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, Depends, Header
 from pydantic import BaseModel
 from typing import List, Optional
 
-router = APIRouter(prefix="/api/clientes", tags=["Clientes"])
+router = APIRouter(prefix="/clientes", tags=["Clientes"])
 
 class ClienteCreate(BaseModel):
     nome: str
