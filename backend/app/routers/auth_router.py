@@ -1,6 +1,8 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, status, Header
 from pydantic import BaseModel
 from typing import Optional
+
+TOKEN_FAKE = "fake-jwt-token-123"
 
 router = APIRouter(prefix="/auth", tags=["Autenticacao"])
 
@@ -26,7 +28,7 @@ def login(request: LoginRequest):
     """Login de usuário"""
     if request.email == TEST_USER["email"] and request.senha == TEST_USER["senha"]:
         return LoginResponse(
-            token="fake-jwt-token-123",
+            token=TOKEN_FAKE,
             user={"id": TEST_USER["id"], "email": TEST_USER["email"], "nome": TEST_USER["nome"]}
         )
     raise HTTPException(
@@ -38,6 +40,18 @@ def login(request: LoginRequest):
 def recuperar_senha(email: dict):
     """Recuperar senha"""
     return {"message": "Email enviado"}
+
+def verify_token(authorization: Optional[str] = Header(None)):
+    """Verifica token JWT via header Authorization"""
+    if not authorization:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token não fornecido")
+    if not authorization.startswith("Bearer "):
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token mal formatado")
+    token = authorization.replace("Bearer ", "")
+    if token != TOKEN_FAKE:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token inválido")
+    return True
+
 
 @router.post("/logout")
 def logout():

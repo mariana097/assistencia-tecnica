@@ -2,49 +2,43 @@
 
 ## 📌 Objetivo
 
-O Sistema de Assistência Técnica tem como objetivo facilitar o gerenciamento de clientes, equipamentos e ordens de serviço, proporcionando maior organização, controle e eficiência no atendimento técnico.
+O Sistema de Assistência Técnica facilita o gerenciamento de clientes, equipamentos, ordens de serviço, contas a receber e notificações, com foco em organização e eficiência no atendimento técnico.
 
 ---
 
 ## 🚀 Funcionalidades
 
-* Cadastro e gerenciamento de clientes  
-* Cadastro de equipamentos vinculados aos clientes  
-* Criação e controle de ordens de serviço  
-* Registro de visitas técnicas  
-* Gerenciamento de funcionários  
-* Controle financeiro através de contas (pendente, pago, cancelado)
+* Cadastro e gerenciamento de clientes
+* Cadastro de equipamentos usados e serviços executados
+* Criação, atualização e controle de ordens de serviço
+* Gestão de funcionários e técnicos
+* Controle financeiro de contas a receber
+* Relatórios de clientes, funcionários e ordens
 
 ---
 
 ## 💻 Tecnologias Utilizadas
 
-* **Python**
+* **Python 3.12+**
 * **FastAPI**
 * **SQLite**
+* **SQLAlchemy**
+* **React**
+* **Vite**
+* **Vitest**
 * **Git & GitHub**
-* **VS Code**
 
 ---
 
-## ⚙️ Arquitetura do Projeto
+## 📂 Estrutura do Projeto
 
-O sistema segue uma arquitetura modular, separando responsabilidades em camadas:
-
-* `models/` → Representação das entidades e acesso ao banco  
-* `data/` → Banco de dados SQLite  
-* `docs/` → Documentação do projeto  
-
----
-
-## 📂 Documentação
-
-Os artefatos do projeto estão disponíveis na pasta `/docs`:
-
-* 📄 [Documento de Visão](docs/doc-visao.md)  
-* 📊 [Modelo de Dados](docs/doc-modelos.md)  
-* 📋 [User Stories](docs/doc-userstories.md)  
-* 🏗️ [Arquitetura do Software](docs/arquitetura.md)  
+* `backend/` → API FastAPI e lógica do servidor
+  * `backend/app/` → aplicação FastAPI, modelos, routers e configuração de banco
+  * `backend/tests/unit/` → testes unitários backend
+  * `backend/tests/integration/` → testes de integração backend
+* `frontend/` → aplicativo React e testes Vitest
+* `docs/` → documentação do projeto
+* `data/` → arquivos persistentes e banco SQLite
 
 ---
 
@@ -53,108 +47,94 @@ Os artefatos do projeto estão disponíveis na pasta `/docs`:
 ### 1. Clonar o repositório
 
 ```bash
-git clone https://github.com/Jadson-Hipolito/assistencia-tecnica-ads
-cd assistencia-tecnica-ads
+git clone https://github.com/Jadson-Hipolito/assistencia-tecnica-adm
+cd assistencia-tecnica-adm
 ```
 
-### 2. Criar ambiente virtual
+### 2. Criar e ativar o ambiente virtual Python
 
 ```bash
-python -m venv venv
+python -m venv .venv
+source .venv/bin/activate
 ```
 
-### 3. Ativar ambiente virtual
-
-* Windows:
+### 3. Instalar dependências do backend
 
 ```bash
-venv\Scripts\activate
+pip install -r backend/requirements.txt
 ```
 
-* Linux/Mac:
+### 4. Executar o servidor backend
 
 ```bash
-source venv/bin/activate
+cd backend
+uvicorn backend.app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-### 4. Instalar dependências
+Ou a partir da raiz do projeto:
 
 ```bash
-pip install fastapi uvicorn
-```
-
-### 5. Executar o servidor
-
-```bash
-uvicorn main:app --reload
+uvicorn backend.app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
 ---
 
-## 📚 Tutorial Utilizado
+## 🧪 Testes
 
-* https://fastapi.tiangolo.com/tutorial/sql-databases/
+### Backend
 
----
-
-## 🌿 Metodologia de Desenvolvimento
-
-O projeto segue a metodologia ágil com **GitFlow**:
-
-* `main` → versão estável  
-* `develop` → desenvolvimento  
-* `feature/*` → novas funcionalidades  
-
-Pull Requests são utilizados para revisão de código antes da integração.
-
----
-
-## 🔢 Versionamento
-
-O projeto utiliza **Versionamento Semântico**:
-
-```
-MAJOR.MINOR.PATCH
+```bash
+.venv/bin/python -m pytest -q backend/tests/unit backend/tests/integration
 ```
 
-Exemplo:
+### Frontend
 
+```bash
+cd frontend
+npm install
+npm run test
 ```
-1.0.0
+
+Testes frontend específicos:
+
+```bash
+npm run test:unit
+npm run test:integration
+npm run test:coverage
 ```
 
 ---
 
-## 📝 Padrão de Commits
+## 🛠️ Frontend
 
-Utilizamos **Conventional Commits**:
+O frontend está em `frontend/` e usa React com Vite. Os testes são executados com Vitest.
 
-* `feat:` nova funcionalidade  
-* `fix:` correção de bugs  
-* `docs:` documentação  
-* `chore:` tarefas gerais  
+---
+
+## 📂 Notas sobre a organização
+
+* `backend/` agora é um pacote Python com `backend/__init__.py`
+* A aplicação backend expõe o app em `backend.app.main`
+* Os testes backend foram movidos para `backend/tests/unit` e `backend/tests/integration`
+
+---
+
+## 📚 Documentação
+
+* 📄 [Documento de Visão](docs/doc-visao.md)
+* 📊 [Modelo de Dados](docs/doc-modelos.md)
+* 📋 [User Stories](docs/doc-userstories.md)
+* 🏗️ [Arquitetura do Software](docs/arquitetura.md)
 
 ---
 
 ## 👥 Equipe
 
-* Jadson Hipólito de Almeida  
-* Mariana Araújo de Medeiros  
-
----
-
-## 🌐 AcademicDevFlow
-
-O projeto também está sendo gerenciado na plataforma AcademicDevFlow, onde foram cadastrados feedbacks e organização da equipe.
+* Jadson Hipólito de Almeida
+* Mariana Araújo de Medeiros
 
 ---
 
 ## ✅ Status do Projeto
 
-🚧 Em desenvolvimento  
-
----
-
-## 📌 Considerações Finais
-
-Este projeto foi desenvolvido como atividade da disciplina de Engenharia de Software II, com foco na aplicação de boas práticas de versionamento, organização e desenvolvimento colaborativo.
+🚧 Em desenvolvimento

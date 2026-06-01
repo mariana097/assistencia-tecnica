@@ -1,14 +1,9 @@
 #!/bin/bash
-# Matar processos antigos na porta 8000
-echo "Parando servidores antigos..."
-fuser -k 8000/tcp 2>/dev/null
+# Parar qualquer servidor antigo na porta 8000
+fuser -k 8000/tcp 2>/dev/null || true
 
-# Aguardar 2 segundos
-sleep 2
+# Ir para a pasta do backend
+cd "$(dirname "$0")/backend"
 
 # Iniciar servidor
-echo "Iniciando servidor na porta 8000..."
-cd /workspaces/assistencia-tecnica-adm/assistencia-tecnica-ads/backend
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
-
-echo "Servidor rodando em: http://localhost:8000"
+uvicorn backend.app.main:app --reload --host 0.0.0.0 --port 8000

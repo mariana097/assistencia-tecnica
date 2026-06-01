@@ -3,18 +3,6 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import UsuarioForm from '../components/UsuarioForm'
 
-const mockListarUsuarios = vi.fn()
-const mockCriarUsuario = vi.fn()
-const mockAtualizarUsuario = vi.fn()
-const mockDesativarUsuario = vi.fn()
-
-vi.mock('../services/api', () => ({
-  listarUsuarios: () => mockListarUsuarios(),
-  criarUsuario: (data) => mockCriarUsuario(data),
-  atualizarUsuario: (id, data) => mockAtualizarUsuario(id, data),
-  desativarUsuario: (id) => mockDesativarUsuario(id)
-}))
-
 describe('UsuarioForm Component', () => {
   const mockUsuarios = [
     { id: 1, nome: 'João Silva', email: 'joao@email.com', tipo: 'CLIENTE', status: 'ATIVO' },
@@ -23,12 +11,25 @@ describe('UsuarioForm Component', () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
-    mockListarUsuarios.mockResolvedValue(mockUsuarios)
+    const store = { token: 'fake-token' }
+    const localStorageMock = {
+      getItem: (key) => (key in store ? store[key] : null),
+      setItem: (key, value) => { store[key] = String(value) },
+      removeItem: (key) => { delete store[key] },
+      clear: () => { Object.keys(store).forEach((key) => delete store[key]) }
+    }
+    Object.defineProperty(window, 'localStorage', {
+      value: localStorageMock,
+      writable: true,
+    })
+    global.fetch = vi.fn()
   })
 
   it('deve renderizar lista de usuários', async () => {
+    global.fetch.mockResolvedValueOnce({ ok: true, json: async () => mockUsuarios })
+
     render(<UsuarioForm />)
-    
+
     await waitFor(() => {
       expect(screen.getByText('João Silva')).toBeInTheDocument()
       expect(screen.getByText('Maria Souza')).toBeInTheDocument()
@@ -37,27 +38,37 @@ describe('UsuarioForm Component', () => {
 
   it('deve cadastrar novo usuário', async () => {
     const novoUsuario = { nome: 'Novo User', email: 'novo@email.com', tipo: 'CLIENTE' }
-    mockCriarUsuario.mockResolvedValue({ id: 3, ...novoUsuario })
-    mockListarUsuarios.mockResolvedValue([...mockUsuarios, { ...novoUsuario, id: 3 }])
+
+    global.fetch
+      .mockResolvedValueOnce({ ok: true, json: async () => mockUsuarios })
+      .mockResolvedValueOnce({ ok: true, json: async () => ({ id: 3, ...novoUsuario, status: 'ATIVO' }) })
+      .mockResolvedValueOnce({ ok: true, json: async () => [...mockUsuarios, { ...novoUsuario, id: 3 }] })
 
     render(<UsuarioForm />)
-    
+
     await waitFor(() => {
       expect(screen.getByText('Gerenciar Usuários')).toBeInTheDocument()
     })
-    
-    const nomeInput = screen.getByLabelText(/nome/i)
-    const emailInput = screen.getByLabelText(/e-mail/i)
-    const senhaInput = screen.getByLabelText(/senha/i)
+
+    const nomeInput = document.querySelector("input[name='nome']")
+    const emailInput = document.querySelector("input[name='email']")
+    const senhaInput = document.querySelector("input[name='senha']")
     const submitButton = screen.getByRole('button', { name: /cadastrar/i })
-    
+
     await userEvent.type(nomeInput, 'Novo User')
     await userEvent.type(emailInput, 'novo@email.com')
     await userEvent.type(senhaInput, 'senha123')
     fireEvent.click(submitButton)
-    
+
     await waitFor(() => {
-      expect(mockCriarUsuario).toHaveBeenCalled()
+      expect(global.fetch).toHaveBeenCalledWith(
+        'http://localhost:8000/usuarios',
+        expect.objectContaining({
+          method: 'POST',
+          headers: expect.objectContaining({ 'Content-Type': 'application/json' }),
+        })
+      )
+      expect(screen.getByText('Novo User')).toBeInTheDocument()
     })
   })
 })
