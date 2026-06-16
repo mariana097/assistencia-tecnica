@@ -2,6 +2,8 @@ from fastapi import APIRouter, HTTPException, status
 from pydantic import BaseModel
 from typing import List, Optional
 
+USUARIO_NAO_ENCONTRADO = "Usuário não encontrado"
+
 router = APIRouter(prefix="/usuarios", tags=["Usuarios"])
 
 class UsuarioCreate(BaseModel):
@@ -56,7 +58,7 @@ def buscar_usuario(usuario_id: int):
             return u
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND,
-        detail="Usuário não encontrado"
+        detail=USUARIO_NAO_ENCONTRADO
     )
 
 @router.put("/{usuario_id}", response_model=UsuarioResponse)
@@ -68,7 +70,7 @@ def atualizar_usuario(usuario_id: int, data: dict):
             return usuarios_db[i]
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND,
-        detail="Usuário não encontrado"
+        detail=USUARIO_NAO_ENCONTRADO
     )
 
 @router.delete("/{usuario_id}")
@@ -80,5 +82,5 @@ def desativar_usuario(usuario_id: int):
             return {"message": "Usuário desativado com sucesso"}
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND,
-        detail="Usuário não encontrado"
+        detail=USUARIO_NAO_ENCONTRADO
     )
