@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, status, Header
 from pydantic import BaseModel
 from typing import Optional
 
-TOKEN_FAKE = "fake-jwt-token-123"
+TOKEN = "jwt-token-758"
 
 router = APIRouter(prefix="/auth", tags=["Autenticacao"])
 
@@ -16,10 +16,10 @@ class LoginResponse(BaseModel):
 
 # Usuário para teste
 TEST_USER = {
-    "email": "admin@assistencia.com",
-    "senha": "admin123",
+    "email": "ricardoalsouza@gmail.com",
+    "senha": "reiricardoI",
     "id": 1,
-    "nome": "Admin",
+    "nome": "Ricardo",
     "tipo": "ADMIN"
 }
 
@@ -28,7 +28,7 @@ def login(request: LoginRequest):
     """Login de usuário"""
     if request.email == TEST_USER["email"] and request.senha == TEST_USER["senha"]:
         return LoginResponse(
-            token=TOKEN_FAKE,
+            token=TOKEN,
             user={"id": TEST_USER["id"], "email": TEST_USER["email"], "nome": TEST_USER["nome"]}
         )
     raise HTTPException(
@@ -48,7 +48,7 @@ def verify_token(authorization: Optional[str] = Header(None)):
     if not authorization.startswith("Bearer "):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token mal formatado")
     token = authorization.replace("Bearer ", "")
-    if token != TOKEN_FAKE:
+    if token != TOKEN:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token inválido")
     return True
 
