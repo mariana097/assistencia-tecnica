@@ -2,17 +2,16 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from datetime import datetime
 
-from app.database import get_db
-from app.models.cliente import Cliente
-from app.models.funcionario import Funcionario
-from app.models.usuario import Usuario
+from backend.app.database import get_db
+from backend.app.models.cliente import Cliente
+from backend.app.models.funcionario import Funcionario
 
 router = APIRouter(prefix="/relatorios", tags=["Relatórios"])
 
 @router.get("/dashboard/resumo")
 def dashboard_resumo(db: Session = Depends(get_db)):
     total_clientes = db.query(Cliente).count()
-    total_usuarios = db.query(Usuario).count()
+    total_usuarios = 0
     total_funcionarios = db.query(Funcionario).count()
     
     return {
@@ -26,19 +25,10 @@ def dashboard_resumo(db: Session = Depends(get_db)):
 
 @router.get("/usuarios")
 def relatorio_usuarios(db: Session = Depends(get_db)):
-    usuarios = db.query(Usuario).all()
-    
     return {
         "tipo": "usuarios",
-        "total": len(usuarios),
-        "usuarios": [
-            {
-                "id": u.id,
-                "nome": u.nome,
-                "email": u.email,
-                "tipo": u.tipo
-            } for u in usuarios
-        ],
+        "total": 0,
+        "usuarios": [],
         "gerado_em": datetime.now().isoformat()
     }
 
@@ -82,7 +72,7 @@ def relatorio_funcionarios(db: Session = Depends(get_db)):
 @router.get("/completo")
 def relatorio_completo(db: Session = Depends(get_db)):
     total_clientes = db.query(Cliente).count()
-    total_usuarios = db.query(Usuario).count()
+    total_usuarios = 0
     total_funcionarios = db.query(Funcionario).count()
     
     return {

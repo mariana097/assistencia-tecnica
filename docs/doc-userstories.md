@@ -9,13 +9,14 @@
 | US04 | Gerenciar Ordem_Serviço | Permite ao administrador abrir, consultar, atualizar, encerrar ordens de serviço | RF04 | Mariana |
 | US05 | Manter Serviço | Permite ao usuário administrador gerenciar o catálogo de serviços oferecidos pela assistência técnica, incluindo cadastro, consulta, atualização e desativação de serviços, com seus respectivos valores padrão e tempo estimado de execução.| RF05 | Jadson |
 | US06 | Registrar Serviço_Executado | Registra a execução de um serviço específico em uma ordem de serviço, com controle de tempo real, técnico responsável e cálculo automático de comissão.| RF06 | Mariana |
-| US07 | Gerenciar Equipamento | Permite ao administrador cadastrar, consultar, atualizar, controlar estoque e desativar equipamentos/peças utilizados nos serviços. | RF07 | Jadson |
+| US07 | Gerenciar Equipamento | Permite ao administrador cadastrar, consultar, atualizar e desativar equipamentos/peças utilizados nos serviços. | RF07 | Jadson |
 | US08 | Gerenciar Equipamento_Usado | Permite associar equipamentos a uma ordem de serviço.| RF08 | Mariana |
 | US09 | Agendar Visita_Técnica | Permite ao administrador agendar visitas e ao técnico registrar a realização das visitas técnicas vinculadas a uma OS.| RF09 | Jadson |
 | US10 |Gerenciar Conta_Receber | Gerencia automaticamente as contas a receber com valor_total da OS, data_emissão atual e data_vencimento calculada e permite registrar pagamentos (offline e online), incluindo marcar conta como paga. | RF10 | Mariana |
 | US11 | Gerenciar Pagamento | Registra cada transação de pagamento realizada, permitindo que uma única conta a receber tenha múltiplos pagamentos (parcelado).| RF11 | Jadson |
 | US12 | Gerar Relatório | Permite gerar um relatório de ordens de serviço filtrado por período de abertura, status e técnico responsável, com opção de exportação.| RF12 | Mariana |
 | US13 | Controle de Garantia | Permite consultar e controlar o período de garantia das ordens de serviço finalizadas, com alerta para garantias próximas do vencimento ou já expiradas.| RF13| Jadson |
+| 
 ---
 # Documento Lista de User Stories
 
@@ -35,7 +36,8 @@ Este documento descreve os User Stories criados a partir da Lista de Requisitos 
 |------------|--------|-----------------------------------------------|--------|
 | 30/03/2026 | 0.1.0  | Criação inicial da lista de User Stories      | Jadson |
 | 31/03/2026 | 1.0.0  | Documento completo com User Stories revisado  | Jadson |
-| 17/04/2026 | 1.1.0  | Correção de inconsistências e adição de novas US12 a US14 | Mariana |
+| 17/04/2026 | 1.1.0  | Correção de inconsistências e adição de novas US12 e US13 | Mariana |
+| 30/05/2026 |       | Correção de inconsistências e adição de nova US14 | Mariana |
 
 ---
 
@@ -60,6 +62,12 @@ Permite login, recuperação de senha e logout para todos os perfis de usuário.
 - Testador: Mariana
 
 **Testes de Aceitação:**
+- Cadastro de usuário
+- Alteração de e-mail
+- Alteração de senha
+- Cadastro de usuários comuns pelo administrador
+- Consulta/listagem de usuários
+- Desativação de usuários
 - Login realizado com sucesso com credenciais válidas
 - E-mail ou senha incorretos geram erro
 - Apenas usuários ativos podem acessar
@@ -156,9 +164,9 @@ O sistema deve manter um cadastro de aparelho de um cliente. Um aparelho tem os 
 ## US04 - Gerenciar Ordem_Serviço 
 
 **Descrição:** 
-Permite ao administrador e técnico abrir, editar, consultar, atualizar o status da ordem de serviço conforme andamento e encerrar ordens de serviço.
+Permite ao cliente solicitar abertura de ordem de serviço para seus aparelhos. Permite ao administrador e técnico consultar, editar, atualizar o status e encerrar ordens de serviço conforme o andamento do atendimento.
 
-**Requisitos:** RF04.1, RF04.2, RF04.3, RF04.4, RF04.5, RF04.6
+**Requisitos:** RF04.1, RF04.2, RF04.3, RF04.4, RF04.5.
 
 **Prioridade:** Essencial  
 **Estimativa:**  12h
@@ -170,22 +178,18 @@ Permite ao administrador e técnico abrir, editar, consultar, atualizar o status
 - Testador: Mariana  
 
 **Testes de Aceitação:**
-- Abrir OS com cliente, técnico e descrição do problema
+- Cliente pode abrir uma solicitação de serviço para um aparelho cadastrado
+- A OS criada pelo cliente recebe status inicial ABERTA
 - Editar OS (descrição, técnico) - apenas se não finalizada
 - Consultar OS por ID, cliente, período ou status
 - Encerrar OS com status FINALIZADA e data_encerramento atual
-- Cliente só vê suas próprias OS
+- Cliente pode consultar apenas suas próprias OS
 - Técnico só vê OS onde é responsável
 - OS com status FINALIZADA ou CANCELADA não pode ser editada
 - Status disponíveis: ABERTA, EM_ANDAMENTO, AGUARDANDO_PECA, FINALIZADA, CANCELADA
 - Técnico só altera OS onde é responsável
 - Status inválido gera erro
 - CANCELADA só permitido para OS em ABERTA ou EM_ANDAMENTO
-- Listar OS por cliente específico
-- Listar OS por funcionário específico
-- Listar OS por aparelhos de um cliente específico
-- Listar OS por periodo
-- Listar OS por status
 
 ---
 
@@ -234,9 +238,15 @@ Permite ao técnico registrar a execução de serviços individuais dentro de um
 **Testes de Aceitação:**
 - Técnico inicia e para cronômetro para cada serviço
 - Sistema registra tempo real gasto
-- Múltiplos técnicos podem executar serviços diferentes na mesma OS
 - Comissão calculada automaticamente baseada no serviço + técnico
-- Relatório de produtividade por técnico/período
+- Registrar serviço em uma OS
+Pausar execução
+Retomar execução
+Finalizar execução
+Calcular data_fim_garantia
+Consultar serviços executados por técnico
+Consultar serviços executados por período
+Verificar garantia ativa
 
 ## US07 - Gerenciar Equipamento
 
@@ -386,7 +396,13 @@ Permite gerar um relatório de ordens de serviço filtrado por período de abert
 - Relatório gerado com sucesso no período selecionado
 - Filtro por status funciona
 - Filtro por técnico funciona
-- Exibe: ID da OS, cliente, data_abertura, data_encerramento, status, valor_total
+- Exibe: ID da OS, usuario, data_abertura, data_encerramento, status, valor_total
+- Listar OS por cliente específico
+- Listar OS por funcionário específico
+- Listar OS por aparelhos de um cliente específico
+- Listar OS por periodo
+- Listar OS por status
+- Relatório de produtividade por técnico/período
 - Exibe totalizadores (quantidade de OS e valor total no período)
 - Período inválido (data_fim < data_início) gera erro
 - Opção de exportar para PDF e CSV funciona
@@ -419,38 +435,67 @@ Permite consultar e controlar o período de garantia das ordens de serviço fina
 
 ---
 
+## US14 - Gerenciar Notificações
+
+**Descrição:**
+Permite enviar, consultar e gerenciar notificações relacionadas a alterações de ordens de serviço, pagamentos, garantias e visitas técnicas.
+
+**Requisitos:** RF14.1, RF14.2, RF14.3, RF14.4, RF14.5, RF14.6, RF14.7, RF14.8
+
+**Prioridade:** Importante
+
+**Estimativa:** 5h
+
+**Responsáveis:**
+- Analista: Mariana
+- Desenvolvedor: Mariana
+- Revisor: Jadson
+- Testador: Mariana
+
+**Testes de Aceitação:**
+- Notificação enviada ao cliente quando a OS muda de status
+- Lembrete enviado para contas próximas do vencimento
+- Alerta enviado para garantias próximas do vencimento
+- Notificação enviada quando visita técnica for agendada
+- Usuário consegue visualizar suas notificações
+- Usuário consegue marcar notificação como lida
+- Usuário consegue excluir notificação
+- Administrador consegue reenviar notificações com falha
+
+---
+
 # Matriz de Rastreabilidade - Requisitos Funcionais x User Stories
 
-| ID    | Requisito Funcional                     | User Stories | Total |
-| ------| --------------------------------------- | ------------ | ----- |
-| RF00  | Manter Usuário                          | US00         |   1   | 
-| RF01  | Manter Cliente                          | US01         |   1   |
-| RF02  | Manter Funcionário                      | US02         |   1   |
-| RF03  | Gerenciar Aparelho                      | US03         |   1   |
-| RF04  | Gerenciar Ordem_Serviço                 | US04         |   1   |
-| RF05  | Manter Serviço                          | US05         |   1   |
-| RF06  | Registrar Serviço_Executado             | US06         |   1   | 
-| RF07  | Gerenciar Equipamento                   | US07         |   1   |
-| RF08  | Gerenciar Equipamento_Usado             | US08         |   1   |
-| RF09  | Agendar Visita_Técnica                  | US09         |   1   |
-| RF10  | Gerenciar Conta_Receber                 | US10         |   1   |
-| RF11  | Gerenciar Pagamento                     | US11         |   1   |
-| RF12  | Gerar Relatórios                        | US12         |   1   |
-| RF13  | Controle de Garantia                    | US13         |   1   |
-
+| ID    | Requisito Funcional            | User Stories | Total |
+| ------| -------------------------------| ------------ | ----- |
+| RF00  | Manter Usuário                 | US00         |   1   | 
+| RF01  | Manter Cliente                 | US01         |   1   |
+| RF02  | Manter Funcionário             | US02         |   1   |
+| RF03  | Gerenciar Aparelho             | US03         |   1   |
+| RF04  | Gerenciar Ordem_Serviço        | US04         |   1   |
+| RF05  | Manter Serviço                 | US05         |   1   |
+| RF06  | Registrar Serviço_Executado    | US06         |   1   | 
+| RF07  | Gerenciar Equipamento          | US07         |   1   |
+| RF08  | Gerenciar Equipamento_Usado    | US08         |   1   |
+| RF09  | Agendar Visita_Técnica         | US09         |   1   |
+| RF10  | Gerenciar Conta_Receber        | US10         |   1   |
+| RF11  | Gerenciar Pagamento            | US11         |   1   |
+| RF12  | Gerar Relatório                | US12         |   1   |
+| RF13  | Controle de Garantia           | US13         |   1   |
+| RF14  | Gerenciar Notificações         | US14         |   1   |
 
 ## 📊 Estatísticas
 
-- **Total de Requisitos Funcionais:** 14
-- **Total de User Stories:** 14
+- **Total de Requisitos Funcionais:** 15
+- **Total de User Stories:** 15
 - **Média de US por RF:** 1:1
-- **Total estimado de desenvolvimento:** 92 horas
+- **Total estimado de desenvolvimento:** 97 horas
 
 ## 🔄 Mapeamento US × Perfis de Usuário
 
 | Perfil | User Stories |
 |:---|:---|
-| Cliente |	US03, US10, US11 |
-| Técnico |	US03, US04,  US05, US06, US08, US09 |
-| Administrativo | US00, US01, US02, US03, US04, US05, US06, US07, US08, US09, US10, US11, US12,US13 |
+| Cliente |	US03, US04, US10, US11, US14 |
+| Técnico |	US01, US03, US04,  US05, US06, US07, US08, US09, US13, US14 |
+| Administrativo | US00, US01, US02, US03, US04, US05, US06, US07, US08, US09, US10, US11, US12, US13, US14 |
 

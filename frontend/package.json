@@ -11,6 +11,8 @@
   },
   "scripts": {
     "test": "vitest",
+    "test:unit": "vitest run src/__tests__/*.test.{js,jsx}",
+    "test:integration": "vitest run src/__tests__/integration",
     "test:coverage": "vitest --coverage",
     "test:watch": "vitest --watch"
   }

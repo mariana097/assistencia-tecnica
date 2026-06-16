@@ -27,19 +27,19 @@ else:
 # 3. Testar importações críticas
 print("\n📦 Testando importações:")
 try:
-    from app.config import *
+    from backend.app.config import *
     print("  ✅ config.py")
 except Exception as e:
     print(f"  ❌ config.py: {e}")
 
 try:
-    from app.database import *
+    from backend.app.database import *
     print("  ✅ database.py")
 except Exception as e:
     print(f"  ❌ database.py: {e}")
 
 try:
-    from app.main import app
+    from backend.app.main import app
     print("  ✅ main.py")
 except Exception as e:
     print(f"  ❌ main.py: {e}")
