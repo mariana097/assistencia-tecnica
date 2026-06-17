@@ -2,6 +2,8 @@ from fastapi import APIRouter, HTTPException, Depends, Header
 from pydantic import BaseModel
 from typing import List, Optional
 
+CLIENTE_NAO_ENCONTRADO = "Cliente não encontrado"
+
 router = APIRouter(prefix="/clientes", tags=["Clientes"])
 
 class ClienteCreate(BaseModel):
@@ -55,7 +57,7 @@ def buscar_cliente(cliente_id: int, _=Depends(verify_token)):
     for c in clientes_db:
         if c["id"] == cliente_id:
             return c
-    raise HTTPException(status_code=404, detail="Cliente não encontrado")
+    raise HTTPException(status_code=404, detail=CLIENTE_NAO_ENCONTRADO)
 
 @router.put("/{cliente_id}", response_model=ClienteResponse)
 def atualizar_cliente(cliente_id: int, data: ClienteCreate, _=Depends(verify_token)):
@@ -64,7 +66,7 @@ def atualizar_cliente(cliente_id: int, data: ClienteCreate, _=Depends(verify_tok
         if c["id"] == cliente_id:
             clientes_db[i] = {**c, **data.dict()}
             return clientes_db[i]
-    raise HTTPException(status_code=404, detail="Cliente não encontrado")
+    raise HTTPException(status_code=404, detail=CLIENTE_NAO_ENCONTRADO)
 
 @router.delete("/{cliente_id}")
 def deletar_cliente(cliente_id: int, _=Depends(verify_token)):
@@ -73,4 +75,4 @@ def deletar_cliente(cliente_id: int, _=Depends(verify_token)):
         if c["id"] == cliente_id:
             del clientes_db[i]
             return {"message": "Cliente deletado com sucesso"}
-    raise HTTPException(status_code=404, detail="Cliente não encontrado")
+    raise HTTPException(status_code=404, detail=CLIENTE_NAO_ENCONTRADO)
