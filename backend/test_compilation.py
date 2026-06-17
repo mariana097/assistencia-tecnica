@@ -1,6 +1,4 @@
-#!/usr/bin/env python3
 import os
-import sys
 import compileall
 
 print("=== DIAGNÓSTICO DE COMPILAÇÃO ===\n")
@@ -27,14 +25,14 @@ else:
 # 3. Testar importações críticas
 print("\n📦 Testando importações:")
 try:
-    from backend.app.config import *
-    print("  ✅ config.py")
+    import backend.app.config as config_module
+    print(f"  ✅ config.py ({config_module.__name__})")
 except Exception as e:
     print(f"  ❌ config.py: {e}")
 
 try:
-    from backend.app.database import *
-    print("  ✅ database.py")
+    import backend.app.database as database_module
+    print(f"  ✅ database.py ({database_module.__name__})")
 except Exception as e:
     print(f"  ❌ database.py: {e}")
 

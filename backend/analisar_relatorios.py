@@ -21,7 +21,7 @@ for endpoint, nome in relatorios:
         if response.status_code == 200:
             data = response.json()
             print(f"\n✅ {nome}:")
-            print(f"   Status: Sucesso")
+            print("   Status: Sucesso")
             if "resumo" in data:
                 print(f"   Resumo: {json.dumps(data['resumo'], indent=4)}")
             elif "total" in data:
