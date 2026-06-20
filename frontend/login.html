@@ -1,0 +1,139 @@
+```html
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Sistema de Gestão de Assistência Técnica</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <header>
+        <h1>🛠️ Sistema de Gestão de Assistência Técnica</h1>
+
+        <nav>
+            <a href="index.html">Início</a>
+        </nav>
+    </header>
+
+    <main>
+
+        <section class="hero">
+            <h2>Login</h2>
+            <p>Acesse sua conta para gerenciar o sistema.</p>
+        </section>
+
+        <section class="login-container">
+
+            <div class="card login-card">
+
+                <form id="loginForm">
+
+                    <div class="input-group">
+                        <label for="email">Email</label>
+                        <input
+                            type="email"
+                            id="email"
+                            placeholder="Digite seu email"
+                            required>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="senha">Senha</label>
+                        <input
+                            type="password"
+                            id="senha"
+                            placeholder="Digite sua senha"
+                            required>
+                    </div>
+
+                    <button type="submit">
+                        Entrar
+                    </button>
+
+                    <button
+                        type="button"
+                        class="btn-cadastro"
+                        onclick="window.location.href='cadastro.html'">
+                        Criar Conta
+                    </button>
+
+                </form>
+
+                <p id="mensagem"></p>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <footer>
+        <p>© 2026 - Sistema de Gestão de Assistência Técnica</p>
+    </footer>
+
+    <script>
+
+        const API_URL = "http://localhost:8000";
+
+        document.getElementById("loginForm").addEventListener("submit", async (e) => {
+
+            e.preventDefault();
+
+            const email = document.getElementById("email").value;
+            const senha = document.getElementById("senha").value;
+
+            try {
+
+                const response = await fetch(`${API_URL}/login`, {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        email,
+                        senha
+                    })
+
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+
+                    localStorage.setItem(
+                        "access_token",
+                        data.access_token
+                    );
+
+                    alert("Login realizado com sucesso!");
+
+                    // Altere para a página principal do sistema
+                    // window.location.href = "dashboard.html";
+
+                } else {
+
+                    document.getElementById("mensagem").innerText =
+                        data.detail || "Email ou senha inválidos.";
+
+                }
+
+            } catch (error) {
+
+                document.getElementById("mensagem").innerText =
+                    "Erro ao conectar com o servidor.";
+
+            }
+
+        });
+
+    </script>
+
+</body>
+</html>
+```
