@@ -1,0 +1,153 @@
+```html
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro - Sistema de Gestão de Assistência Técnica</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<header>
+    <h1>🛠️ Sistema de Gestão de Assistência Técnica</h1>
+
+    <nav>
+        <a href="index.html">Início</a>
+        <a href="login.html">Login</a>
+    </nav>
+</header>
+
+<main>
+
+    <section class="hero">
+        <h2>Criar Conta</h2>
+        <p>Cadastre-se para utilizar o sistema.</p>
+    </section>
+
+    <section class="login-container">
+
+        <div class="card login-card">
+
+            <form id="cadastroForm">
+
+                <div class="input-group">
+                    <label for="nome">Nome</label>
+                    <input
+                        type="text"
+                        id="nome"
+                        placeholder="Digite seu nome"
+                        required>
+                </div>
+
+                <div class="input-group">
+                    <label for="email">Email</label>
+                    <input
+                        type="email"
+                        id="email"
+                        placeholder="Digite seu email"
+                        required>
+                </div>
+
+                <div class="input-group">
+                    <label for="senha">Senha</label>
+                    <input
+                        type="password"
+                        id="senha"
+                        placeholder="Digite sua senha"
+                        required>
+                </div>
+
+                <button type="submit">
+                    Cadastrar
+                </button>
+
+                <button
+                    type="button"
+                    class="btn-cadastro"
+                    onclick="window.location.href='login.html'">
+                    Voltar ao Login
+                </button>
+
+            </form>
+
+            <p id="mensagem"></p>
+
+        </div>
+
+    </section>
+
+</main>
+
+<footer>
+    <p>© 2026 - Sistema de Gestão de Assistência Técnica</p>
+</footer>
+
+<script>
+
+const API_URL = "http://localhost:8000";
+
+document.getElementById("cadastroForm").addEventListener("submit", async (e) => {
+
+    e.preventDefault();
+
+    const nome = document.getElementById("nome").value;
+    const email = document.getElementById("email").value;
+    const senha = document.getElementById("senha").value;
+
+    try{
+
+        const response = await fetch(`${API_URL}/usuarios/`,{
+
+            method:"POST",
+
+            headers:{
+                "Content-Type":"application/json"
+            },
+
+            body:JSON.stringify({
+                nome:nome,
+                email:email,
+                senha:senha
+            })
+
+        });
+
+        const data = await response.json();
+
+        if(response.ok){
+
+            document.getElementById("mensagem").style.color = "green";
+            document.getElementById("mensagem").innerText =
+                "Cadastro realizado com sucesso!";
+
+            setTimeout(() => {
+                window.location.href = "login.html";
+            },1500);
+
+        }
+        else{
+
+            document.getElementById("mensagem").style.color = "red";
+            document.getElementById("mensagem").innerText =
+                data.detail || "Erro ao cadastrar usuário.";
+
+        }
+
+    }
+    catch(error){
+
+        document.getElementById("mensagem").style.color = "red";
+        document.getElementById("mensagem").innerText =
+            "Erro ao conectar com o servidor.";
+
+    }
+
+});
+
+</script>
+
+</body>
+</html>
+```
