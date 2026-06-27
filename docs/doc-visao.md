@@ -101,7 +101,7 @@ RF03.4 - Desativar Aparelho | Desativa aparelho sem OS em andamento             
 ### Entidade Ordem_Serviço - RF04 - Gerenciar Ordem_Serviço
 Uma ordem de serviço registra o atendimento realizado, podendo conter vários equipamentos e status de acompanhamento.
 
-Regra: Um serviço somente poderá ser associado e executado em uma Ordem de Serviço que esteja aberta ou em andamento. Não é permitido registrar serviços para ordens ainda não criadas, canceladas ou finalizadas.
+Regra: Uma Ordem de Serviço somente poderá ser aberta para um cliente e um aparelho cadastrados.
 
 Requisito                     | Descrição   | Ator           |
 ----------------------------- | ----------- | -------------- |
@@ -116,7 +116,7 @@ RF04.5 - Encerrar ordem de serviço   | Encerramento da OS após a conclusão da
 ### Entidade Serviço - RF05 - Gerenciar Serviço
 Representa o catálogo de serviços oferecidos pela assistência técnica.
 
-Regra: Uma Ordem de Serviço somente poderá ser aberta para um cliente e um aparelho cadastrados.
+Regra: Apenas serviços ativos podem ser vinculados a uma Ordem de Serviço.
 
 Requisito                  | Descrição                     | Ator                   |
 -------------------------- | ----------------------------- | ---------------------- |

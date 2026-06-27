@@ -2,7 +2,7 @@
 
 | ID   | Título      | Descrição                                                     | Requisitos Funcionais | Responsável |
 |------|-------------|---------------------------------------------------------------|----------------------|--------------|
-| US00 | Autenticação | Permite login, recuperação de senha e logout para todos os perfis de usuário. O email será o login e ele pode registrar-se diretamente no sistema. Além disso o usuário poderá alterar alguns dados, como o e-mail ou a senha. | Jadson |
+| US00 | Autenticação | Permite que funcionários realizem login, logout e recuperação de senha utilizando e-mail e senha. | Jadson |
 | US01 | Manter Funcionario |  O usuário administrador do sistema pode realizar as operações de cadastrar, atualizar, consultar, desativar e listar os usuários comuns do sistema.| RF01 | Mariana |     
 | US02 | Manter cliente | O sistema deve manter um cadastro de cliente que não possuir acesso ao sistema. Um cliente tem os atributos nome, id, endereço, contato. O usuário administrador do sistema pode realizar as operações de cadastrar, atualizar, consultar, desativar  clientes do sistema.| RF02 | Jadson |
 | US03 | Gerenciar Aparelho | O sistema deve manter um cadastro de aparelho de um cliente. Um aparelho tem os atributos id, tipo, marca, modelo, numero_serie, cliente_id | RF03 | Mariana |
@@ -142,6 +142,7 @@ O sistema deve manter um cadastro de aparelho de um cliente. Um aparelho tem os 
 
 **Testes de Aceitação:**
 - Cadastrar um novo aparelho vinculado a um cliente_id existente
+- Atualizar dados do aparelho
 - Consultar aparelho por id, numero_serie, ou cliente_id
 - Excluir (desativar logicamente) um aparelho. Um aparelho com OS em andamento não pode ser desativado
 
@@ -164,16 +165,16 @@ Permite ao administrador e técnico consultar, editar, atualizar o status e ence
 - Testador: Jadson  
 
 **Testes de Aceitação:**
-- Cliente pode abrir uma solicitação de serviço para um aparelho cadastrado
-- A OS criada pelo cliente recebe status inicial ABERTA
-- Editar OS (descrição, técnico) - apenas se não finalizada
-- Consultar OS por ID, cliente, período ou status
-- Encerrar OS com status FINALIZADA e data_encerramento atual
-- Técnico só vê OS onde é responsável
-- OS com status FINALIZADA ou CANCELADA não pode ser editada
+- Funcionário registra uma nova Ordem de Serviço para um cliente cadastrado.
+- A Ordem de Serviço criada recebe status inicial ABERTA
+- Editar Ordem de Serviço (descrição, técnico) - apenas se não finalizada
+- Consultar Ordem de Serviço por ID, cliente, período ou status
+- Encerrar Ordem de Serviço com status FINALIZADA e data_encerramento atual
+- Técnico só vê Ordem de Serviço onde é responsável
+- Ordem de Serviço com status FINALIZADA ou CANCELADA não pode ser editada
 - Status disponíveis: ABERTA, EM_ANDAMENTO, AGUARDANDO_PECA, FINALIZADA, CANCELADA
-- Técnico só altera OS onde é responsável
-- CANCELADA só permitido para OS em ABERTA ou EM_ANDAMENTO
+- Técnico só altera Ordem de Serviço onde é responsável
+- CANCELADA só permitido para Ordem de Serviço em ABERTA ou EM_ANDAMENTO
 
 ---
 
@@ -231,7 +232,7 @@ Permite registrar os serviços executados em uma Ordem de Serviço, vinculando o
 ## US07 - Gerenciar Equipamento
 
 **Descrição:**  
-Permite cadastrar equipamentos, consultar equipamentos.
+Permite cadastrar equipamentos, alterar e consultar equipamentos.
 
 **Requisitos:** RF07.1, RF07.2, RF07.3, RF07.4  
 
@@ -248,7 +249,6 @@ Permite cadastrar equipamentos, consultar equipamentos.
 **Testes de Aceitação:**  
 - Equipamento cadastrado com sucesso 
 - Consultar equipamento por ID, código, tipo ou modelo
-- Desativar equipamento 
 - Código duplicado gera erro
 
 ---
@@ -302,7 +302,7 @@ Gerencia automaticamente as contas a receber com valor_total da OS, data_emissã
 - Data_emissão = data atual
 - Data_vencimento calculada corretamente
 - OS sem valor_total válido impede encerramento 
-- Cliente realiza pagamento online via gateway integrado
+- Funcionário registra pagamento offline ou online da conta.
 - Status alterado para PAGO com data_pagamento atual
 - Conta já paga não pode ser alterada
 - Conta vencida pode ser paga com multa
@@ -357,7 +357,7 @@ Permite gerar um relatório de ordens de serviço filtrado, com opção de expor
 - Relatório gerado com sucesso no período selecionado
 - Filtro por status funciona
 - Filtro por técnico funciona
-- Exibe: ID da OS, usuario, data_abertura, data_encerramento, status, valor_total
+- Exibe: ID da OS, data_abertura, data_encerramento, status, valor_total
 - Listar todos os aparelhos de um cliente específico
 - Listar OS por cliente específico
 - Listar OS por funcionário específico
@@ -422,8 +422,8 @@ Permite consultar e controlar o período de garantia das ordens de serviço fina
 
 ## 📊 Estatísticas
 
-- **Total de Requisitos Funcionais:** 12
-- **Total de User Stories:** 12
+- **Total de Requisitos Funcionais:** 13
+- **Total de User Stories:** 13
 - **Média de US por RF:** 1:1
 - **Total estimado de desenvolvimento:** 87 horas
 
@@ -431,6 +431,6 @@ Permite consultar e controlar o período de garantia das ordens de serviço fina
 
 | Perfil | User Stories |
 |:-------|:-------------|
-| Técnico |	US00, US02, US03, US04,  US05, US06, US07, US10, US11, US12 |
+| Técnico |	US00, US02, US03, US04, US06, US10 |
 | Administrativo | US00, US01, US02, US03, US04, US05, US06, US07, US08, US09, US10, US11, US12 |
 
