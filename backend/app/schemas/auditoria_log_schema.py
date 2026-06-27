@@ -1,6 +1,7 @@
-from pydantic import BaseModel
 from datetime import datetime
 from typing import Optional
+
+from pydantic import BaseModel, ConfigDict
 
 
 class AuditoriaLogBase(BaseModel):
@@ -17,5 +18,4 @@ class AuditoriaLogResponse(AuditoriaLogBase):
     id: int
     data_hora: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)

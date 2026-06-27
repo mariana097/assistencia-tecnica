@@ -1,6 +1,7 @@
-from pydantic import BaseModel
+from datetime import date, datetime
 from typing import Optional
-from datetime import datetime, date
+
+from pydantic import BaseModel, ConfigDict
 
 
 class ContaReceberBase(BaseModel):
@@ -24,5 +25,4 @@ class ContaReceberResponse(ContaReceberBase):
     data_emissao: datetime
     data_pagamento: Optional[datetime] = None
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)

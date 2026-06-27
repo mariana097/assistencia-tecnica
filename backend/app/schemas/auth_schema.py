@@ -1,13 +1,14 @@
-from pydantic import BaseModel, EmailStr, Field
 from typing import Optional
+
+from pydantic import BaseModel, EmailStr, Field
 
 
 # =========================
 # LOGIN
 # =========================
 class LoginSchema(BaseModel):
-    email: EmailStr = Field(..., example="henrique@email.com")
-    senha: str = Field(..., min_length=6, example="123456")
+    email: EmailStr = Field(..., json_schema_extra={"example": "henrique@email.com"})
+    senha: str = Field(..., min_length=6, json_schema_extra={"example": "123456"})
 
 
 # =========================

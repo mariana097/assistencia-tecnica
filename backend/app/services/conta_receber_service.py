@@ -1,15 +1,17 @@
-from backend.app.models.conta_receber import ContaReceber
 from datetime import datetime
 
+from sqlalchemy.orm import Session
 
-class ContaReceberService:
+from backend.app.models.conta_receber import ContaReceber
+from backend.app.services.base_service import BaseService
 
-    @staticmethod
-    def pagar_conta(db, conta_id: int):
-        conta = db.query(ContaReceber).get(conta_id)
 
-        if not conta:
-            raise ValueError("Conta não encontrada")
+class ContaReceberService(BaseService):
+    def __init__(self, db: Session):
+        super().__init__(db)
+
+    def pagar_conta(self, conta_id: int) -> ContaReceber:
+        conta = self._get_or_raise(ContaReceber, conta_id, "Conta não encontrada")
 
         if conta.status == "PAGO":
             raise ValueError("Conta já paga")
@@ -17,5 +19,6 @@ class ContaReceberService:
         conta.status = "PAGO"
         conta.data_pagamento = datetime.now()
 
-        db.commit()
+        self.db.commit()
+        self.db.refresh(conta)
         return conta

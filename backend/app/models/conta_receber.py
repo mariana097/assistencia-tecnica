@@ -2,7 +2,7 @@ from sqlalchemy import Column, Date, DateTime, ForeignKey, Integer, Numeric, Str
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
-from app.core.database import Base
+from backend.app.core.database import Base
 
 
 class ContaReceber(Base):

@@ -1,22 +1,23 @@
-from backend.app.models.auditoria_log import AuditoriaLog
 from datetime import datetime
 
+from sqlalchemy.orm import Session
 
-class AuditoriaService:
+from backend.app.models.auditoria_log import AuditoriaLog
+from backend.app.services.base_service import BaseService
 
-    @staticmethod
-    def registrar(db, funcionario_id: int, acao: str, entidade: str):
+
+class AuditoriaService(BaseService):
+    def __init__(self, db: Session):
+        super().__init__(db)
+
+    def registrar(self, funcionario_id: int, acao: str, entidade: str) -> AuditoriaLog:
         log = AuditoriaLog(
             funcionario_id=funcionario_id,
             acao=acao,
             entidade=entidade,
-            data_hora=datetime.now()
+            data_hora=datetime.now(),
         )
+        return self._commit_and_refresh(log)
 
-        db.add(log)
-        db.commit()
-        return log
-
-    @staticmethod
-    def listar(db):
-        return db.query(AuditoriaLog).all()
+    def listar(self) -> list[AuditoriaLog]:
+        return self.db.query(AuditoriaLog).all()

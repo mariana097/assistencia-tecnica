@@ -9,7 +9,8 @@ if config.DATABASE_URL.startswith("sqlite:///"):
 
 engine = create_engine(
     config.DATABASE_URL,
-    connect_args={"check_same_thread": False} if "sqlite" in config.DATABASE_URL else {}
+    connect_args={"check_same_thread": False} if "sqlite" in config.DATABASE_URL else {},
+    future=True,
 )
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

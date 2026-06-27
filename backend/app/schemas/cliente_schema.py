@@ -1,5 +1,6 @@
-from pydantic import BaseModel
 from typing import Optional
+
+from pydantic import BaseModel, ConfigDict
 
 
 class ClienteBase(BaseModel):
@@ -22,8 +23,12 @@ class ClienteUpdate(BaseModel):
     ativo: Optional[bool] = None
 
 
-class ClienteResponse(ClienteBase):
+class ClienteResponse(BaseModel):
     id: int
+    nome: str
+    documento: str | None = None
+    endereco: str
+    contato: str | None = None
+    ativo: bool = True
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
