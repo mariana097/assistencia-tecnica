@@ -1,11 +1,11 @@
-from sqlalchemy import Boolean, Column, DateTime, Integer, String
+from sqlalchemy import Boolean, Column, DateTime, Integer, Numeric, String
 from sqlalchemy.sql import func
 
 from app.core.database import Base
 
 
-class Cliente(Base):
-    __tablename__ = "clientes"
+class Servico(Base):
+    __tablename__ = "servicos"
 
     # =========================
     # Identificação
@@ -13,22 +13,13 @@ class Cliente(Base):
     id = Column(Integer, primary_key=True, index=True)
 
     # =========================
-    # Dados básicos
+    # Dados do serviço
     # =========================
-    nome = Column(String(150), nullable=False)
+    nome = Column(String(150), nullable=False, unique=True, index=True)
 
-    email = Column(String(150), nullable=True)
+    descricao = Column(String(255), nullable=True)
 
-    telefone = Column(String(20), nullable=False)
-
-    endereco = Column(String(255), nullable=False)
-
-    # =========================
-    # Documento (PF ou PJ)
-    # =========================
-    cpf = Column(String(14), unique=True, nullable=True, index=True)
-
-    cnpj = Column(String(18), unique=True, nullable=True, index=True)
+    valor_padrao = Column(Numeric(10, 2), nullable=False)
 
     # =========================
     # Status
