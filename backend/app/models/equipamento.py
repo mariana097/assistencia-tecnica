@@ -1,7 +1,7 @@
 from sqlalchemy import Column, DateTime, Integer, String
 from sqlalchemy.sql import func
 
-from app.core.database import Base
+from backend.app.core.database import Base
 
 
 class Equipamento(Base):

@@ -1,6 +1,7 @@
-from pydantic import BaseModel
-from typing import Optional
 from datetime import datetime
+from typing import Optional
+
+from pydantic import BaseModel, ConfigDict
 
 
 class OrdemServicoBase(BaseModel):
@@ -24,5 +25,4 @@ class OrdemServicoResponse(OrdemServicoBase):
     data_abertura: datetime
     data_fechamento: Optional[datetime] = None
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)

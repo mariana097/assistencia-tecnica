@@ -1,6 +1,7 @@
-from pydantic import BaseModel
-from typing import Optional
 from datetime import datetime
+from typing import Optional
+
+from pydantic import BaseModel, ConfigDict
 
 
 class VisitaTecnicaBase(BaseModel):
@@ -26,5 +27,4 @@ class VisitaTecnicaResponse(VisitaTecnicaBase):
     id: int
     data_realizacao: Optional[datetime]
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)

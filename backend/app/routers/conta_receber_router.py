@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from backend.app.database.deps import get_db
+from backend.app.core.dependencies import get_db
 from backend.app.schemas.conta_receber_schema import (
     ContaReceberCreate,
     ContaReceberUpdate,

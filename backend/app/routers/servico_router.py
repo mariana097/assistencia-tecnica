@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from backend.app.schemas.servico_schema import ServicoCreate
 from backend.app.services.servico_service import ServicoService
-from backend.app.database.deps import get_db
+from backend.app.core.dependencies import get_db
 
 router = APIRouter(prefix="/servicos", tags=["Serviços"])
 

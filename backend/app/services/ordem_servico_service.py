@@ -1,47 +1,42 @@
-from backend.app.models.ordem_servico import OrdemServico
-from backend.app.models.conta_receber import ContaReceber
 from datetime import datetime, timedelta
 
+from sqlalchemy.orm import Session
 
-class OrdemServicoService:
+from backend.app.models.conta_receber import ContaReceber
+from backend.app.models.ordem_servico import OrdemServico
+from backend.app.services.base_service import BaseService
 
-    @staticmethod
-    def abrir_os(db, data):
-        os = OrdemServico(
+
+class OrdemServicoService(BaseService):
+    def __init__(self, db: Session):
+        super().__init__(db)
+
+    def abrir_os(self, data) -> OrdemServico:
+        ordem = OrdemServico(
             descricao=data.descricao,
             cliente_id=data.cliente_id,
             aparelho_id=data.aparelho_id,
             status="ABERTA",
-            data_abertura=datetime.now()
+            data_abertura=datetime.now(),
         )
+        return self._commit_and_refresh(ordem)
 
-        db.add(os)
-        db.commit()
-        db.refresh(os)
-        return os
+    def finalizar_os(self, os_id: int) -> OrdemServico:
+        ordem = self._get_or_raise(OrdemServico, os_id, "OS não encontrada")
 
-    @staticmethod
-    def finalizar_os(db, os_id: int):
-        os = db.query(OrdemServico).get(os_id)
-
-        if not os:
-            raise ValueError("OS não encontrada")
-
-        if os.status == "FINALIZADA":
+        if ordem.status == "FINALIZADA":
             raise ValueError("OS já finalizada")
 
-        os.status = "FINALIZADA"
-        os.data_fechamento = datetime.now()
+        ordem.status = "FINALIZADA"
+        ordem.data_fechamento = datetime.now()
 
-        # 🔥 REGRA IMPORTANTE: gera conta automaticamente
         conta = ContaReceber(
-            ordem_servico_id=os.id,
-            valor_total=0,  # será calculado depois
+            ordem_servico_id=ordem.id,
+            valor_total=0,
             data_vencimento=datetime.now().date() + timedelta(days=30),
-            status="PENDENTE"
+            status="PENDENTE",
         )
-
-        db.add(conta)
-        db.commit()
-
-        return os
+        self.db.add(conta)
+        self.db.commit()
+        self.db.refresh(ordem)
+        return ordem

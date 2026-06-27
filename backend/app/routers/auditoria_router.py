@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from backend.app.services.auditoria_service import AuditoriaService
-from backend.app.database.deps import get_db
+from backend.app.core.dependencies import get_db
 
 router = APIRouter(prefix="/auditoria", tags=["Auditoria"])
 

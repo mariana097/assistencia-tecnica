@@ -1,5 +1,6 @@
-from pydantic import BaseModel
 from typing import Optional
+
+from pydantic import BaseModel, ConfigDict
 
 
 class EquipamentoBase(BaseModel):
@@ -25,5 +26,4 @@ class EquipamentoUpdate(BaseModel):
 class EquipamentoResponse(EquipamentoBase):
     id: int
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
