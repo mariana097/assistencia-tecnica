@@ -1,0 +1,28 @@
+from pydantic import BaseModel
+from typing import Optional
+from datetime import datetime, date
+
+
+class ContaReceberBase(BaseModel):
+    ordem_servico_id: int
+    valor_total: float
+    data_vencimento: date
+    status: str = "PENDENTE"
+
+
+class ContaReceberCreate(ContaReceberBase):
+    pass
+
+
+class ContaReceberUpdate(BaseModel):
+    status: Optional[str] = None
+    data_pagamento: Optional[datetime] = None
+
+
+class ContaReceberResponse(ContaReceberBase):
+    id: int
+    data_emissao: datetime
+    data_pagamento: Optional[datetime] = None
+
+    class Config:
+        from_attributes = True
