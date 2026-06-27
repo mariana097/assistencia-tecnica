@@ -1,25 +1,29 @@
-from pydantic import BaseModel, ConfigDict, EmailStr
-from datetime import datetime
+from pydantic import BaseModel
 from typing import Optional
+
 
 class ClienteBase(BaseModel):
     nome: str
-    email: EmailStr
-    telefone: str
-    endereco: Optional[str] = None
+    documento: str  # CPF/CNPJ
+    endereco: str
+    contato: str
+    ativo: bool = True
+
 
 class ClienteCreate(ClienteBase):
     pass
 
+
 class ClienteUpdate(BaseModel):
     nome: Optional[str] = None
-    email: Optional[EmailStr] = None
-    telefone: Optional[str] = None
+    documento: Optional[str] = None
     endereco: Optional[str] = None
+    contato: Optional[str] = None
+    ativo: Optional[bool] = None
+
 
 class ClienteResponse(ClienteBase):
     id: int
-    data_cadastro: datetime
-    ativo: bool
-    
-    model_config = ConfigDict(from_attributes=True)
+
+    class Config:
+        from_attributes = True
