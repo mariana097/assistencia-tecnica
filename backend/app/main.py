@@ -17,6 +17,26 @@ from app.models import (
     auditoria_log,
 )
 
+from backend.app.routers import (
+    auth_router,
+    funcionario_router,
+    cliente_router,
+    ordem_servico_router,
+    servico_router,
+    pagamento_router,
+    auditoria_router
+)
+
+app = FastAPI(title="Sistema Assistência Técnica")
+
+app.include_router(auth_router.router)
+app.include_router(funcionario_router.router)
+app.include_router(cliente_router.router)
+app.include_router(ordem_servico_router.router)
+app.include_router(servico_router.router)
+app.include_router(pagamento_router.router)
+app.include_router(auditoria_router.router)
+
 app = FastAPI(
     title="Sistema de Gestão de Assistência Técnica",
     description="API para gestão de assistência técnica",

@@ -1,59 +1,14 @@
-from fastapi import APIRouter, HTTPException, status, Header
-from pydantic import BaseModel
-from typing import Optional
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
+from backend.app.schemas.auth_schema import LoginSchema
+from backend.app.services.auth_service import AuthService
+from backend.app.database.deps import get_db
 
-TOKEN_FAKE = "fake-jwt-token-123"
+router = APIRouter(prefix="/auth", tags=["Auth"])
 
-router = APIRouter(prefix="/auth", tags=["Autenticacao"])
-
-class LoginRequest(BaseModel):
-    email: str
-    senha: str
-
-class LoginResponse(BaseModel):
-    token: str
-    user: dict
-
-# Usuário para teste
-TEST_USER = {
-    "email": "admin@assistencia.com",
-    "senha": "admin123",
-    "id": 1,
-    "nome": "Admin",
-    "tipo": "ADMIN"
-}
-
-@router.post("/login", response_model=LoginResponse)
-def login(request: LoginRequest):
-    """Login de usuário"""
-    if request.email == TEST_USER["email"] and request.senha == TEST_USER["senha"]:
-        return LoginResponse(
-            token=TOKEN_FAKE,
-            user={"id": TEST_USER["id"], "email": TEST_USER["email"], "nome": TEST_USER["nome"]}
-        )
-    raise HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Credenciais inválidas"
-    )
-
-@router.post("/recuperar-senha")
-def recuperar_senha(email: dict):
-    """Recuperar senha"""
-    return {"message": "Email enviado"}
-
-def verify_token(authorization: Optional[str] = Header(None)):
-    """Verifica token JWT via header Authorization"""
-    if not authorization:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token não fornecido")
-    if not authorization.startswith("Bearer "):
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token mal formatado")
-    token = authorization.replace("Bearer ", "")
-    if token != TOKEN_FAKE:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token inválido")
-    return True
-
-
-@router.post("/logout")
-def logout():
-    """Logout"""
-    return {"message": "Logout realizado com sucesso"}
+@router.post("/login")
+def login(data: LoginSchema, db: Session = Depends(get_db)):
+    token = AuthService.login(db, data.email, data.senha)
+    if not token:
+        raise HTTPException(status_code=401, detail="Credenciais inválidas")
+    return {"access_token": token}
