@@ -29,18 +29,37 @@ export default function LoginPage() {
   }
 
   return (
-    <div>
-      <h1>Login</h1>
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="email">E-mail</label>
-        <input id="email" value={email} onChange={(event) => setEmail(event.target.value)} />
+    <div className="login-page">
+      <div className="login-card">
+        <h1>Login</h1>
+        <form onSubmit={handleSubmit} className="login-form">
+          <label htmlFor="email">E-mail</label>
+          <input
+            id="email"
+            type="email"
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
+            placeholder="seu@email.com"
+            required
+          />
 
-        <label htmlFor="senha">Senha</label>
-        <input id="senha" type="password" value={senha} onChange={(event) => setSenha(event.target.value)} />
+          <label htmlFor="senha">Senha</label>
+          <input
+            id="senha"
+            type="password"
+            value={senha}
+            onChange={(event) => setSenha(event.target.value)}
+            placeholder="******"
+            required
+          />
 
-        <button type="submit" disabled={loading}>{loading ? 'Entrando...' : 'Entrar'}</button>
-        {error ? <p role="alert">{error}</p> : null}
-      </form>
+          <button type="submit" disabled={loading}>
+            {loading ? 'Entrando...' : 'Entrar'}
+          </button>
+
+          {error ? <p role="alert" className="error-message">{error}</p> : null}
+        </form>
+      </div>
     </div>
   )
 }

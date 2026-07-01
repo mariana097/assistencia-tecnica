@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
+import { getProfile } from '../services/api'
 
 const AuthContext = createContext(null)
 
@@ -7,11 +8,38 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const storedUser = localStorage.getItem('user')
-    if (storedUser) {
-      setUser(JSON.parse(storedUser))
+    const restoreAuth = async () => {
+      const token = localStorage.getItem('token')
+      if (!token) {
+        setLoading(false)
+        return
+      }
+
+      const storedUser = localStorage.getItem('user')
+      if (storedUser) {
+        try {
+          setUser(JSON.parse(storedUser))
+        } catch {
+          localStorage.removeItem('user')
+        }
+        setLoading(false)
+        return
+      }
+
+      try {
+        const profile = await getProfile()
+        setUser(profile)
+        localStorage.setItem('user', JSON.stringify(profile))
+      } catch {
+        localStorage.removeItem('user')
+        localStorage.removeItem('token')
+        setUser(null)
+      } finally {
+        setLoading(false)
+      }
     }
-    setLoading(false)
+
+    restoreAuth()
   }, [])
 
   const login = (userData) => {
