@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+
 const Login = ({ onLoginSuccess }) => {
     const [email, setEmail] = useState('');
     const [senha, setSenha] = useState('');
@@ -12,7 +14,7 @@ const Login = ({ onLoginSuccess }) => {
         setLoading(true);
 
         try {
-            const response = await fetch('http://localhost:8000/auth/login', {
+            const response = await fetch(`${API_URL}/auth/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, senha })

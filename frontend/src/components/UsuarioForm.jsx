@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+
 const UsuarioForm = () => {
     const [usuarios, setUsuarios] = useState([]);
     const [formData, setFormData] = useState({
@@ -16,7 +18,7 @@ const UsuarioForm = () => {
 
     const carregarUsuarios = async () => {
         try {
-            const response = await fetch('http://localhost:8000/usuarios', {
+            const response = await fetch(`${API_URL}/usuarios`, {
                 headers: { 'Authorization': `Bearer ${getToken()}` }
             });
             if (response.ok) {
@@ -46,8 +48,8 @@ const UsuarioForm = () => {
 
         try {
             const url = editingId 
-                ? `http://localhost:8000/usuarios/${editingId}`
-                : 'http://localhost:8000/usuarios';
+                ? `${API_URL}/usuarios/${editingId}`
+                : `${API_URL}/usuarios`;
             const method = editingId ? 'PUT' : 'POST';
 
             const response = await fetch(url, {
@@ -84,7 +86,7 @@ const UsuarioForm = () => {
     const handleDelete = async (id) => {
         if (window.confirm('Tem certeza que deseja desativar este usuário?')) {
             try {
-                await fetch(`http://localhost:8000/usuarios/${id}`, {
+                await fetch(`${API_URL}/usuarios/${id}`, {
                     method: 'DELETE',
                     headers: { 'Authorization': `Bearer ${getToken()}` }
                 });
